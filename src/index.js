@@ -1,6 +1,12 @@
-import { createStore } from 'redux'
+import { applyMiddleware, createStore } from 'redux'
+import logger from 'redux-logger'
 
 import './index.css'
+import rootReducer from './reducers/index'
+import { helloWorld } from './actions/index'
+import Root from './components/index'
+
+const components = [Root]
 
 const init = () => {
     var root = document.getElementById('root')
@@ -11,33 +17,26 @@ const init = () => {
     return canvas.getContext("2d")
 }
 
-const rootReducer = (state = { hello: "world" }, action) => {
-    switch(action.type) {
-        case "HELLO_WORLD":
-            return Object.assign({}, state, { hello: "Hello World!" })
-
-        default:
-            return state
-    }
-}
-
-const helloWorld = () => ({
-    type: "HELLO_WORLD"
-})
-
 var currentValue
-const handleChange = (getState) => () => {
+const handleChange = (getState, context) => () => {
     const previousValue = currentValue
     currentValue = getState()
 
     if(currentValue !== previousValue) {
-        console.log("I handled a change, yo!")
+        for(const componentInstance of componentInstances) {
+            if(componentInstance.shouldComponentUpdate()) {
+                const { canvas, x, y } = componentInstance.render(context)
+                context.drawImage(canvas, x, y)
+            }
+        }
     }
 }
 
 var context = init()
+var store = createStore(rootReducer, applyMiddleware(logger))
 
-var store = createStore(rootReducer)
+const componentInstances = components.map(
+    (component) => new component(store.getState))
 
 var unsubscribe = store.subscribe(handleChange(store.getState, context))
 
