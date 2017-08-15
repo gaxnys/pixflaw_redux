@@ -3,7 +3,7 @@ import logger from 'redux-logger'
 
 import './index.css'
 import rootReducer from './reducers/index'
-import { helloWorld } from './actions/index'
+import { helloWorld, renderTick, gameTick } from './actions/index'
 import Root from './components/index'
 
 const components = [Root]
@@ -23,6 +23,7 @@ const handleChange = (getState, context) => () => {
     currentValue = getState()
 
     if(currentValue !== previousValue) {
+        context.clearRect(0, 0, context.canvas.width, context.canvas.height)
         for(const componentInstance of componentInstances) {
             if(componentInstance.shouldComponentUpdate()) {
                 const { canvas, x, y } = componentInstance.render(context)
@@ -33,7 +34,12 @@ const handleChange = (getState, context) => () => {
 }
 
 var context = init()
-var store = createStore(rootReducer, applyMiddleware(logger))
+var store
+if(process.env.NODE_ENV === "development") {
+    store = createStore(rootReducer, applyMiddleware(logger))
+} else {
+    store = createStore(rootReducer)
+}
 
 const componentInstances = components.map(
     (component) => new component(store.getState))
@@ -41,3 +47,13 @@ const componentInstances = components.map(
 var unsubscribe = store.subscribe(handleChange(store.getState, context))
 
 store.dispatch(helloWorld())
+
+const animationTicker = (timestamp) => {
+    store.dispatch(renderTick())
+    window.requestAnimationFrame(animationTicker)
+}
+window.requestAnimationFrame(animationTicker)
+
+window.setInterval(() => {
+    store.dispatch(gameTick())
+}, 10)
