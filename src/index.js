@@ -23,9 +23,13 @@ const handleChange = (getState, context) => () => {
     currentValue = getState()
 
     if(currentValue !== previousValue) {
-        context.clearRect(0, 0, context.canvas.width, context.canvas.height)
-        for(const componentInstance of componentInstances) {
-            if(componentInstance.shouldComponentUpdate()) {
+        const shouldUpdateCanvas = componentInstances.reduce(
+            (shouldUpdate, componentInstance) =>
+                (shouldUpdate || componentInstance.shouldComponentUpdate()),
+            false)
+        if(shouldUpdateCanvas) {
+            context.clearRect(0, 0, context.canvas.width, context.canvas.height)
+            for(const componentInstance of componentInstances) {
                 const { canvas, x, y } = componentInstance.render(context)
                 context.drawImage(canvas, Math.round(x), Math.round(y))
             }
