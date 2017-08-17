@@ -22,10 +22,12 @@ export class Component {
 class Root extends Component {
     render() {
         const state = this.getState()
+        const WIDTH = 20
+        const HEIGHT = 30
         this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height)
         this.context.fillStyle = "#007DFF"
-        this.context.fillRect(state.count % 100, Math.floor(state.count / 100), 100, 100)
-        return { canvas: this.context.canvas, x: 0, y: 0 }
+        this.context.fillRect(0, 0, WIDTH, HEIGHT)
+        return { canvas: this.context.canvas, x: state.player.posX - WIDTH/2, y: state.player.posY - HEIGHT/2 }
     }
 }
 

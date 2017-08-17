@@ -1,9 +1,9 @@
 import { applyMiddleware, createStore } from 'redux'
-import logger from 'redux-logger'
+import { createLogger } from 'redux-logger'
 
 import './index.css'
 import rootReducer from './reducers/index'
-import { helloWorld, renderTick, gameTick } from './actions/index'
+import { renderTick, gameTick, keyDown, keyUp } from './actions/index'
 import Root from './components/index'
 
 const components = [Root]
@@ -27,13 +27,18 @@ const handleChange = (getState, context) => () => {
         for(const componentInstance of componentInstances) {
             if(componentInstance.shouldComponentUpdate()) {
                 const { canvas, x, y } = componentInstance.render(context)
-                context.drawImage(canvas, x, y)
+                context.drawImage(canvas, Math.round(x), Math.round(y))
             }
         }
     }
 }
 
 var context = init()
+
+var predicate = (getState, action) =>
+    (action.type !== "RENDER_TICK" && action.type !== "GAME_TICK")
+
+var logger = createLogger({predicate: predicate})
 var store
 if(process.env.NODE_ENV === "development") {
     store = createStore(rootReducer, applyMiddleware(logger))
@@ -46,8 +51,6 @@ const componentInstances = components.map(
 
 var unsubscribe = store.subscribe(handleChange(store.getState, context))
 
-store.dispatch(helloWorld())
-
 const animationTicker = (timestamp) => {
     store.dispatch(renderTick())
     window.requestAnimationFrame(animationTicker)
@@ -57,3 +60,6 @@ window.requestAnimationFrame(animationTicker)
 window.setInterval(() => {
     store.dispatch(gameTick())
 }, 10)
+
+window.onkeydown = (event) => store.dispatch(keyDown(event.key))
+window.onkeyup = (event) => store.dispatch(keyUp(event.key))
