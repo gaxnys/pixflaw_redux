@@ -3,7 +3,7 @@ import { createLogger } from 'redux-logger'
 
 import './index.css'
 import rootReducer from './reducers/index'
-import { renderTick, gameTick, keyDown, keyUp } from './actions/index'
+import { renderTick, gameTick, keyDown, keyUp, touches } from './actions/index'
 import Root from './components/index'
 
 const components = [Root]
@@ -67,3 +67,18 @@ window.setInterval(() => {
 
 window.onkeydown = (event) => store.dispatch(keyDown(event.key))
 window.onkeyup = (event) => store.dispatch(keyUp(event.key))
+
+document.body.addEventListener('touchstart', (event) => {
+    event.preventDefault()
+    store.dispatch(touches(event.touches, window.innerWidth, window.innerHeight))
+}, { passive: false })
+
+document.body.addEventListener('touchend', (event) => {
+    event.preventDefault()
+    store.dispatch(touches(event.touches, window.innerWidth, window.innerHeight))
+}, { passive: false })
+
+document.body.addEventListener('touchcancel', (event) => {
+    event.preventDefault()
+    store.dispatch(touches(event.touches, window.innerWidth, window.innerHeight))
+}, { passive: false })

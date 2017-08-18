@@ -20,3 +20,11 @@ export const keyUp = (key) => ({
     type: KEY_UP,
     key
 })
+
+export const TOUCHES = 'TOUCHES'
+export const touches = (touches, windowWidth, windowHeight) => ({
+    type: TOUCHES,
+    touches,
+    windowWidth,
+    windowHeight
+})
