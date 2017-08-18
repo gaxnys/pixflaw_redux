@@ -1,3 +1,5 @@
+import { PLAYER_WIDTH, PLAYER_HEIGHT } from '../constants'
+
 export class Component {
     constructor(getState) {
         this.context = document.createElement('canvas').getContext("2d")
@@ -34,10 +36,8 @@ export class Component {
 class Root extends Component {
     constructor(getState) {
         super(getState)
-        this.width = 20
-        this.height = 30
         this.context.fillStyle = "#007DFF"
-        this.context.fillRect(0, 0, this.width, this.height)
+        this.context.fillRect(0, 0, PLAYER_WIDTH, PLAYER_HEIGHT)
     }
 
     shouldCanvasUpdate(previousValue, currentValue) {
@@ -59,8 +59,8 @@ class Root extends Component {
         const state = this.getState()
         return {
             canvas: this.context.canvas,
-            x: state.player.posX - this.width/2,
-            y: state.player.posY - this.height/2
+            x: state.player.posX - PLAYER_WIDTH/2,
+            y: state.player.posY - PLAYER_HEIGHT/2
         }
     }
 }

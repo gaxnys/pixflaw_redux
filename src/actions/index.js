@@ -4,8 +4,9 @@ export const renderTick = () => ({
 })
 
 export const GAME_TICK = 'GAME_TICK'
-export const gameTick = () => ({
-    type: GAME_TICK
+export const gameTick = (windowHeight) => ({
+    type: GAME_TICK,
+    windowHeight
 })
 
 export const KEY_DOWN = 'KEY_DOWN'

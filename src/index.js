@@ -62,7 +62,7 @@ const animationTicker = (timestamp) => {
 window.requestAnimationFrame(animationTicker)
 
 window.setInterval(() => {
-    store.dispatch(gameTick())
+    store.dispatch(gameTick(window.innerHeight))
 }, 10)
 
 window.onkeydown = (event) => store.dispatch(keyDown(event.key))
