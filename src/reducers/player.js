@@ -65,8 +65,7 @@ const player = (state = { keys: new Set(), velX: 0, velY: 0, posX: 100, posY: 10
             newKeys = new Set()
             if(action.touches.length === 2) {
                 newKeys.add("up")
-            }
-            if(action.touches.length > 0) {
+            } else if(action.touches.length > 0) {
                 if(action.touches[0].clientX > action.windowWidth / 2) {
                     newKeys.add("right")
                 } else {
