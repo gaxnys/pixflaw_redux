@@ -1,6 +1,18 @@
 import { RENDER_TICK, GAME_TICK, KEY_DOWN, KEY_UP, TOUCHES } from '../actions/index'
 import { ACCELERATION, JUMP_ACCELERATION, RUN_ACCELERATION, FLY_ACCELERATION, GRAVITY, GROUND_FRICTION, AIR_FRICTION, VELOCITY_LOSS, PLAYER_HEIGHT } from '../constants.js'
 
+const keyToDirection = {
+    "w": "up",
+    "ArrowUp": "up",
+    "a": "left",
+    "ArrowLeft": "left",
+    "s": "down",
+    "ArrowDown": "down",
+    "d": "right",
+    "ArrowRight": "right",
+    " ": "up",
+}
+
 const calculateAcceleration = (keys, colliding) => {
     var accX = 0, accY = 0
     var verticalAcc = 0
@@ -11,23 +23,18 @@ const calculateAcceleration = (keys, colliding) => {
     }
     for(const key of keys){
         switch(key) {
-            case "w":
-            case "ArrowUp":
-            case " ":
+            case "up":
                 accY -= verticalAcc
                 break
 
-            case "a":
-            case "ArrowLeft":
+            case "left":
                 accX -= horizontalAcc
                 break
 
-            case "s":
-            case "ArrowDown":
+            case "down":
                 break
 
-            case "d":
-            case "ArrowRight":
+            case "right":
                 accX += horizontalAcc
                 break
 
@@ -46,23 +53,24 @@ const player = (state = { keys: new Set(), velX: 0, velY: 0, posX: 100, posY: 10
     switch(action.type) {
         case KEY_DOWN:
             newKeys = new Set(state.keys)
-            newKeys.add(action.key)
+            newKeys.add(keyToDirection[action.key])
             return Object.assign({}, state, { keys: newKeys })
 
         case KEY_UP:
             newKeys = new Set(state.keys)
-            newKeys.delete(action.key)
+            newKeys.delete(keyToDirection[action.key])
             return Object.assign({}, state, { keys: newKeys })
 
         case TOUCHES:
             newKeys = new Set()
             if(action.touches.length === 2) {
-                newKeys.add("w")
-            } else if(action.touches.length === 1) {
+                newKeys.add("up")
+            }
+            if(action.touches.length > 0) {
                 if(action.touches[0].clientX > action.windowWidth / 2) {
-                    newKeys.add("d")
+                    newKeys.add("right")
                 } else {
-                    newKeys.add("a")
+                    newKeys.add("left")
                 }
             }
             return Object.assign({}, state, { keys: newKeys })
@@ -70,8 +78,6 @@ const player = (state = { keys: new Set(), velX: 0, velY: 0, posX: 100, posY: 10
         case GAME_TICK:
             const collidingIsh = (state.posY + 1 > action.windowHeight - PLAYER_HEIGHT / 2)
             const newAcc = calculateAcceleration(state.keys, collidingIsh)
-
-            console.log(collidingIsh ? "colliding" : "not colliding")
 
             var newVelY = state.velY + newAcc.y
             var newPosY = state.posY + newVelY
