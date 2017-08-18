@@ -56,8 +56,10 @@ const player = (state = { keys: new Set(), velX: 0, velY: 0, posX: 100, posY: 10
 
         case TOUCHES:
             newKeys = new Set()
-            for(const touch of action.touches) {
-                if(touch.clientX > action.windowWidth / 2) {
+            if(action.touches.length === 2) {
+                newKeys.add("w")
+            } else if(action.touches.length === 1) {
+                if(action.touches[0].clientX > action.windowWidth / 2) {
                     newKeys.add("d")
                 } else {
                     newKeys.add("a")
