@@ -17,26 +17,15 @@ class Background extends Component {
         return this.updatePosition = false
     }
 
-    render() {
-        const state = this.getState()
-        return {
-            canvas: this.context.canvas,
-            angle: state.player.cameraAngle,
-            r: state.player.cameraR * 0.9 - PLANET_RADIUS,
-            offsetX: 2000,
-            offsetY: 2000,
-        }
-    }
-
     renderToContext(context, state) {
         context.fillStyle = "#FFFFFF"
         const r = state.player.cameraR * 0.9 - PLANET_RADIUS
         const angle = state.player.cameraAngle
+        const offsetX = r * Math.cos(angle)
+        const offsetY = r * Math.sin(angle)
         for(const point of this.points) {
-            const posX = Math.round(point.r * Math.cos(point.angle) +
-                                    r * Math.cos(angle))
-            const posY = Math.round(point.r * Math.sin(point.angle) +
-                                    r * Math.sin(angle))
+            const posX = Math.round(point.r * Math.cos(point.angle) + offsetX)
+            const posY = Math.round(point.r * Math.sin(point.angle) + offsetY)
             context.fillRect(posX, posY, 1, 1)
         }
     }

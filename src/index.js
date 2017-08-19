@@ -75,18 +75,14 @@ const componentInstances = components.map(
 var unsubscribe = store.subscribe(handleChange(store.getState, context))
 
 const animationTicker = (timestamp) => {
-    store.dispatch(renderTick())
-    window.requestAnimationFrame(animationTicker)
-}
-window.requestAnimationFrame(animationTicker)
-
-window.setInterval(() => {
     const state = store.getState()
     if(state.player.posR > state.level.goalRadius) {
         store.dispatch(levelWin())
     }
     store.dispatch(gameTick())
-}, 10)
+    window.requestAnimationFrame(animationTicker)
+}
+window.requestAnimationFrame(animationTicker)
 
 window.onkeydown = (event) => store.dispatch(keyDown(event.key))
 window.onkeyup = (event) => store.dispatch(keyUp(event.key))

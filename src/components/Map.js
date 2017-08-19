@@ -40,16 +40,15 @@ class Map extends Component {
     }
 
     renderToContext(context, state, center) {
-        context.strokeStyle = "#999999"
-        context.lineWidth = PLATFORM_SIDE
+        context.fillStyle = "#999999"
+
         for(const point of state.level.level) {
+            context.save()
             const angleDiff = Math.tan(PLATFORM_SIDE / 2 / point.r)
 
-            context.beginPath()
-            context.arc(center, center, point.r,
-                             point.angle - angleDiff,
-                             point.angle + angleDiff)
-            context.stroke()
+            context.rotate(point.angle)
+            context.fillRect(point.r - PLATFORM_SIDE / 2, - PLATFORM_SIDE / 2, PLATFORM_SIDE, PLATFORM_SIDE)
+            context.restore()
         }
 
         context.fillStyle = "#666666"
