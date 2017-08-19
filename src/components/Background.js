@@ -32,7 +32,7 @@ class Background extends Component {
         return {
             canvas: this.context.canvas,
             angle: state.player.cameraAngle,
-            r: state.player.cameraR * 1.2 - PLANET_RADIUS,
+            r: state.player.cameraR * 0.9 - PLANET_RADIUS,
             offsetX: 2000,
             offsetY: 2000,
         }

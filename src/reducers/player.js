@@ -1,5 +1,6 @@
 import { RENDER_TICK, GAME_TICK, KEY_DOWN, KEY_UP, TOUCHES } from '../actions/index'
-import { ACCELERATION, JUMP_ACCELERATION, RUN_ACCELERATION, FLY_ACCELERATION, GRAVITY, GROUND_FRICTION, AIR_FRICTION, VELOCITY_LOSS, PLAYER_HEIGHT, PLANET_RADIUS, CAMERA_INERTIA } from '../constants.js'
+import { ACCELERATION, JUMP_ACCELERATION, RUN_ACCELERATION, FLY_ACCELERATION, GROUND_FRICTION, AIR_FRICTION, VELOCITY_LOSS, PLAYER_WIDTH, PLAYER_HEIGHT, PLATFORM_SIDE, PLANET_RADIUS, CAMERA_INERTIA, PLANET_MASS, SPEED_LIMIT } from '../constants.js'
+import { normalize } from '../utils/trig'
 
 const keyToDirection = {
     "w": "up",
@@ -28,14 +29,14 @@ const calculateAcceleration = (keys, posR, colliding) => {
                 break
 
             case "left":
-                accAngle += Math.tan(horizontalAcc / posR)
+                accAngle += Math.atan(horizontalAcc / posR)
                 break
 
             case "down":
                 break
 
             case "right":
-                accAngle -= Math.tan(horizontalAcc / posR)
+                accAngle -= Math.atan(horizontalAcc / posR)
                 break
 
             default:
@@ -43,15 +44,55 @@ const calculateAcceleration = (keys, posR, colliding) => {
         }
     }
 
-    accR -= GRAVITY
+    accR -= PLANET_MASS / Math.pow(posR, 2)
 
     return { r: accR, angle: accAngle }
 }
 
-const player = (state = { keys: new Set(),
-                          velR: 0, velAngle: 0,
-                          posR: 1100, posAngle: Math.PI/2,
-                          cameraR: 1100, cameraAngle: Math.PI/2 }, action) => {
+const checkCollisions = (posR, posAngle, platforms) => {
+    var sides = { up: false, left: false, down: false, right: false, almost: false }
+    const playerWidthPlatform = PLAYER_WIDTH / 2 + PLATFORM_SIDE / 2
+    const playerAnglePlatform = Math.atan(playerWidthPlatform / posR)
+    const playerHeightPlatform = PLAYER_HEIGHT / 2 + PLATFORM_SIDE / 2
+    for(const platform of platforms) {
+        const radiusDiff = platform.r - posR
+        const angleDiff = normalize(platform.angle - posAngle)
+
+        sides.almost = sides.almost || (
+            Math.abs(radiusDiff) < playerHeightPlatform + 1 &&
+            Math.abs(angleDiff) < Math.atan((playerWidthPlatform) / posR) &&
+            radiusDiff < 0)
+
+        if(Math.abs(radiusDiff) > playerHeightPlatform) {
+            continue
+        }
+        if(Math.abs(angleDiff) > playerAnglePlatform) {
+            continue
+        }
+        if(playerHeightPlatform - Math.abs(radiusDiff) <
+            playerWidthPlatform - Math.abs(posR * Math.tan(angleDiff))
+        ) {
+            if(radiusDiff >= 0)
+                sides.up = sides.up || Math.abs(radiusDiff) - playerHeightPlatform
+            else
+                sides.down = sides.down || playerHeightPlatform - Math.abs(radiusDiff)
+        } else {
+            if(angleDiff >= 0)
+                sides.left = sides.left || Math.abs(angleDiff) - playerAnglePlatform
+            else
+                sides.right = sides.right || playerAnglePlatform - Math.abs(angleDiff)
+        }
+    }
+    return sides
+}
+
+const player = (
+    state = { keys: new Set(),
+              velR: 0, velAngle: 0,
+              posR: 1100, posAngle: Math.PI/2,
+              cameraR: 1100, cameraAngle: Math.PI/2
+    }, action, levelState
+) => {
     var newKeys
     switch(action.type) {
         case KEY_DOWN:
@@ -78,11 +119,18 @@ const player = (state = { keys: new Set(),
             return Object.assign({}, state, { keys: newKeys })
 
         case GAME_TICK:
-            const collidingIsh = (state.posR - PLAYER_HEIGHT / 2 - 1 < PLANET_RADIUS)
+            const collisions = checkCollisions(state.posR, state.posAngle, levelState)
+            const collidingIsh =
+                (state.posR - PLAYER_HEIGHT / 2 - 1 < PLANET_RADIUS) || collisions.almost
             const newAcc = calculateAcceleration(state.keys, state.posR, collidingIsh)
 
-            var newVelR = state.velR + newAcc.r
-            var newPosR = state.posR + newVelR
+            var newVelR = Math.min(state.velR + newAcc.r, SPEED_LIMIT)
+            if(collisions.up && state.velR > 0 || collisions.down && state.velR < 0) {
+                newVelR = 0
+            }
+            var newPosR = state.posR + newVelR +
+                          collisions.down + collisions.up
+
             if(state.posR - PLAYER_HEIGHT / 2 < PLANET_RADIUS) {
                 newPosR = PLANET_RADIUS + PLAYER_HEIGHT / 2
                 newVelR = (newVelR < -VELOCITY_LOSS) ? -(newVelR+VELOCITY_LOSS) : 0
@@ -99,7 +147,12 @@ const player = (state = { keys: new Set(),
             if(Math.abs(newVelAngle) < Math.tan(friction / state.posR)) {
                 newVelAngle = 0
             }
-            var newPosAngle = state.posAngle + newVelAngle
+
+            if(collisions.left && state.velAngle > 0 || collisions.right && state.velAngle < 0) {
+                newVelAngle = 0
+            }
+            var newPosAngle = state.posAngle + newVelAngle +
+                              collisions.left + collisions.right
 
             if(newPosAngle > 2 * Math.PI) {
                 newPosAngle -= 2 * Math.PI

@@ -1,19 +1,19 @@
 import { Component } from './index'
-import { PLANET_RADIUS } from '../constants'
+import { PLANET_RADIUS, LEVEL_RADIUS, PLATFORM_SIDE } from '../constants'
 import { pointsInCircle } from '../utils/random'
 
 class Map extends Component {
     constructor(getState) {
         super(getState)
-        this.context.canvas.width = PLANET_RADIUS * 4
-        this.context.canvas.height = PLANET_RADIUS * 4
-        this.center = PLANET_RADIUS * 2
+        this.context.canvas.width = LEVEL_RADIUS * 2
+        this.context.canvas.height = LEVEL_RADIUS * 2
+        this.center = LEVEL_RADIUS
 
         const state = getState()
         this.context.strokeStyle = "#999999"
-        this.context.lineWidth = 40
+        this.context.lineWidth = PLATFORM_SIDE
         for(const point of state.level) {
-            const angleDiff = Math.tan(20 / point.r)
+            const angleDiff = Math.tan(PLATFORM_SIDE / 2 / point.r)
 
             this.context.beginPath()
             this.context.arc(this.center, this.center, point.r,

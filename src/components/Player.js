@@ -20,7 +20,9 @@ class Player extends Component {
 
         return this.updatePosition = (
             previousValue.player.posAngle !== currentValue.player.posAngle ||
-            previousValue.player.posR !== currentValue.player.posR
+            previousValue.player.posR !== currentValue.player.posR ||
+            previousValue.player.cameraAngle !== currentValue.player.cameraAngle ||
+            previousValue.player.cameraR !== currentValue.player.cameraR
         )
     }
 
