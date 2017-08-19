@@ -12,12 +12,6 @@ import Background from './components/Background'
 const components = [Background, Map, Player]
 
 const init = () => {
-    const prepareContext = (context) => {
-        const canvas = context.canvas
-        context.translate(canvas.width / 2, canvas.height)
-        context.scale(1, -1)
-        context.translate(0, -1000)
-    }
     var root = document.getElementById('root')
     var canvas = document.createElement('canvas')
     canvas.width = window.innerWidth
@@ -26,13 +20,10 @@ const init = () => {
     window.onresize = (event) => {
         canvas.width = window.innerWidth
         canvas.height = window.innerHeight
-        var context = canvas.getContext("2d")
-        prepareContext(context)
     }
 
     root.appendChild(canvas)
     var context = canvas.getContext("2d")
-    prepareContext(context)
     return context
 }
 
@@ -48,11 +39,22 @@ const handleChange = (getState, context) => () => {
             false)
         if(shouldUpdateCanvas) {
             context.clearRect(0, 0, context.canvas.width, context.canvas.height)
+            context.save()
+            const canvas = context.canvas
+            context.translate(canvas.width / 2, canvas.height)
+            context.scale(1, -1)
+            context.translate(0, -1000)
+            const rotation = -currentValue.player.posAngle + Math.PI / 2
+            context.rotate(rotation)
             for(const componentInstance of componentInstances) {
-                const { canvas, x, y } = componentInstance.render(context)
+                const { canvas, angle, r, offsetX, offsetY } =
+                    componentInstance.render(context)
+                const x = r * Math.cos(angle)
+                const y = r * Math.sin(angle)
                 context.drawImage(
-                    canvas, Math.round(x), Math.round(y))
+                    canvas, Math.round(x - offsetX), Math.round(y - offsetY))
             }
+            context.restore()
         }
     }
 }

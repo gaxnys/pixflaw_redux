@@ -4,15 +4,15 @@ import { POINTS } from '../constants'
 class Background extends Component {
     constructor(getState) {
         super(getState)
-        this.context.canvas.width = 2000
-        this.context.canvas.height = 2000
+        this.context.canvas.width = 4000
+        this.context.canvas.height = 4000
         this.context.fillStyle = "#000000"
-        this.context.fillRect(0, 0, 2000, 2000)
+        this.context.fillRect(0, 0, 4000, 4000)
 
         this.context.fillStyle = "#FFFFFF"
         for(var i = 0; i < POINTS; i += 1) {
-            const posX = Math.round(Math.random()*2000)
-            const posY = Math.round(Math.random()*2000)
+            const posX = Math.round(Math.random()*4000)
+            const posY = Math.round(Math.random()*4000)
             this.context.fillRect(posX, posY, 1, 1)
         }
     }
@@ -29,8 +29,10 @@ class Background extends Component {
         const state = this.getState()
         return {
             canvas: this.context.canvas,
-            x: -1000,
-            y: 0,
+            angle: 0,
+            r: 0,
+            offsetX: 2000,
+            offsetY: 2000
         }
     }
 }

@@ -3,10 +3,10 @@ import { Component } from './index'
 class Map extends Component {
     constructor(getState) {
         super(getState)
-        this.context.canvas.width = 2000
-        this.context.canvas.height = 1000
+        this.context.canvas.width = 3000
+        this.context.canvas.height = 3000
         this.context.fillStyle = "#666666"
-        this.context.arc(1000, -1000, 1200, 0, Math.PI)
+        this.context.arc(1500, 1500, 1200, 0, 2 * Math.PI)
         this.context.fill()
     }
 
@@ -22,8 +22,10 @@ class Map extends Component {
         const state = this.getState()
         return {
             canvas: this.context.canvas,
-            x: -1000,
-            y: 1000,
+            angle: 0,
+            r: 0,
+            offsetX: 1500,
+            offsetY: 1500,
         }
     }
 }
