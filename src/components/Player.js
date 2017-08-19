@@ -31,10 +31,13 @@ class Player extends Component {
             const canvas = this.context.canvas
             this.context.clearRect(0, 0, canvas.width, canvas.height)
             this.context.save()
-            this.context.translate(PLAYER_WIDTH * 2, PLAYER_HEIGHT * 2)
+            this.context.translate(PLAYER_WIDTH  * 2,
+                                   PLAYER_HEIGHT  * 2)
             this.context.rotate(state.player.posAngle)
-            this.context.fillRect(- PLAYER_HEIGHT / 2, - PLAYER_WIDTH / 2,
-                                  PLAYER_HEIGHT, PLAYER_WIDTH)
+            this.context.fillRect(- PLAYER_HEIGHT / 2,
+                                - PLAYER_WIDTH / 2,
+                                  PLAYER_HEIGHT,
+                                  PLAYER_WIDTH)
             this.context.restore()
         }
         return {

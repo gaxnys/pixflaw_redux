@@ -6,10 +6,8 @@ import rootReducer from './reducers/index'
 import { renderTick, gameTick, keyDown, keyUp, touches } from './actions/index'
 import Player from './components/Player'
 import Map from './components/Map'
-import Background from './components/Background'
 
-
-const components = [Background, Map, Player]
+const components = [Map, Player]
 
 const init = () => {
     var root = document.getElementById('root')
@@ -38,14 +36,24 @@ const handleChange = (getState, context) => () => {
                 (shouldUpdate || componentInstance.shouldComponentUpdate()),
             false)
         if(shouldUpdateCanvas) {
-            context.clearRect(0, 0, context.canvas.width, context.canvas.height)
+            context.fillStyle = "#000"
+            context.fillRect(0, 0, context.canvas.width, context.canvas.height)
             context.save()
             const canvas = context.canvas
             context.translate(canvas.width / 2, canvas.height)
-            context.scale(1, -1)
-            context.translate(0, -1000)
-            const rotation = -currentValue.player.posAngle + Math.PI / 2
+            const scale = Math.min(window.innerHeight / 9, window.innerWidth / 16) / 120
+            context.scale(scale, -scale)
+            context.translate(0, -currentValue.player.cameraR + context.canvas.height / 2)
+            const rotation = -currentValue.player.cameraAngle + Math.PI / 2
             context.rotate(rotation)
+
+            context.fillStyle = "#FFFFFF"
+            for(const point of currentValue.background) {
+                const x = point.r * Math.cos(point.angle)
+                const y = point.r * Math.sin(point.angle)
+                context.fillRect(Math.round(x), Math.round(y), 1, 1)
+            }
+
             for(const componentInstance of componentInstances) {
                 const { canvas, angle, r, offsetX, offsetY } =
                     componentInstance.render(context)
@@ -84,7 +92,8 @@ const animationTicker = (timestamp) => {
 window.requestAnimationFrame(animationTicker)
 
 window.setInterval(() => {
-    store.dispatch(gameTick(window.innerHeight))
+    const scale = Math.min(window.innerHeight / 9, window.innerWidth / 16) / 120
+    store.dispatch(gameTick())
 }, 10)
 
 window.onkeydown = (event) => store.dispatch(keyDown(event.key))

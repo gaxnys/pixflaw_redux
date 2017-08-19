@@ -1,5 +1,5 @@
 import { RENDER_TICK, GAME_TICK, KEY_DOWN, KEY_UP, TOUCHES } from '../actions/index'
-import { ACCELERATION, JUMP_ACCELERATION, RUN_ACCELERATION, FLY_ACCELERATION, GRAVITY, GROUND_FRICTION, AIR_FRICTION, VELOCITY_LOSS, PLAYER_HEIGHT } from '../constants.js'
+import { ACCELERATION, JUMP_ACCELERATION, RUN_ACCELERATION, FLY_ACCELERATION, GRAVITY, GROUND_FRICTION, AIR_FRICTION, VELOCITY_LOSS, PLAYER_HEIGHT, PLANET_RADIUS, CAMERA_INERTIA } from '../constants.js'
 
 const keyToDirection = {
     "w": "up",
@@ -48,7 +48,10 @@ const calculateAcceleration = (keys, posR, colliding) => {
     return { r: accR, angle: accAngle }
 }
 
-const player = (state = { keys: new Set(), velR: 0, velAngle: 0, posR: 1100, posAngle: Math.PI/2 }, action) => {
+const player = (state = { keys: new Set(),
+                          velR: 0, velAngle: 0,
+                          posR: 1100, posAngle: Math.PI/2,
+                          cameraR: 1100, cameraAngle: Math.PI/2 }, action) => {
     var newKeys
     switch(action.type) {
         case KEY_DOWN:
@@ -75,13 +78,13 @@ const player = (state = { keys: new Set(), velR: 0, velAngle: 0, posR: 1100, pos
             return Object.assign({}, state, { keys: newKeys })
 
         case GAME_TICK:
-            const collidingIsh = (state.posR - PLAYER_HEIGHT / 2 - 1 < 1200)
+            const collidingIsh = (state.posR - PLAYER_HEIGHT / 2 - 1 < PLANET_RADIUS)
             const newAcc = calculateAcceleration(state.keys, state.posR, collidingIsh)
 
             var newVelR = state.velR + newAcc.r
             var newPosR = state.posR + newVelR
-            if(state.posR - PLAYER_HEIGHT / 2 < 1200) {
-                newPosR = 1200 + PLAYER_HEIGHT / 2
+            if(state.posR - PLAYER_HEIGHT / 2 < PLANET_RADIUS) {
+                newPosR = PLANET_RADIUS + PLAYER_HEIGHT / 2
                 newVelR = (newVelR < -VELOCITY_LOSS) ? -(newVelR+VELOCITY_LOSS) : 0
                 newVelR = 0
             }
@@ -98,9 +101,16 @@ const player = (state = { keys: new Set(), velR: 0, velAngle: 0, posR: 1100, pos
             }
             const newPosAngle = state.posAngle + newVelAngle
 
+            const newCameraR = ((state.cameraR * CAMERA_INERTIA + newPosR) /
+                (CAMERA_INERTIA + 1))
+            const newCameraAngle = ((state.cameraAngle * CAMERA_INERTIA + newPosAngle) /
+                (CAMERA_INERTIA + 1))
+
             return Object.assign({}, state, {
                 velAngle: newVelAngle, velR: newVelR,
-                posAngle: newPosAngle, posR: newPosR})
+                posAngle: newPosAngle, posR: newPosR,
+                cameraAngle: newCameraAngle, cameraR: newCameraR,
+            })
 
         default:
             return state

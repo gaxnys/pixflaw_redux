@@ -10,3 +10,6 @@ export const PLAYER_WIDTH = 20
 export const PLAYER_HEIGHT = 30
 
 export const POINTS = 10000
+export const BACKGROUND_RADIUS = 3000
+export const PLANET_RADIUS = 1000
+export const CAMERA_INERTIA = 20
