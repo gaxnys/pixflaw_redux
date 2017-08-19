@@ -1,5 +1,5 @@
 import { Component } from './index'
-import { POINTS } from '../constants'
+import { POINTS, BACKGROUND_RADIUS } from '../constants'
 
 class Background extends Component {
     constructor(getState) {
@@ -10,10 +10,13 @@ class Background extends Component {
         this.context.fillRect(0, 0, 4000, 4000)
 
         this.context.fillStyle = "#FFFFFF"
-        for(var i = 0; i < POINTS; i += 1) {
-            const posX = Math.round(Math.random()*4000)
-            const posY = Math.round(Math.random()*4000)
-            this.context.fillRect(posX, posY, 1, 1)
+        for(var i = 0; i < POINTS; i++) {
+            const angle = Math.random()*2*Math.PI
+            const u = Math.random() + Math.random()
+            const r = (u > 1) ? 2 - u : u
+            const posX = Math.round(r * BACKGROUND_RADIUS * Math.cos(angle))
+            const posY = Math.round(r * BACKGROUND_RADIUS * Math.sin(angle))
+            this.context.fillRect(2000 + posX, 2000 + posY, 1, 1)
         }
     }
 

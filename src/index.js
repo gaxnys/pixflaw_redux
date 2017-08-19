@@ -6,8 +6,9 @@ import rootReducer from './reducers/index'
 import { renderTick, gameTick, keyDown, keyUp, touches } from './actions/index'
 import Player from './components/Player'
 import Map from './components/Map'
+import Background from './components/Background'
 
-const components = [Map, Player]
+const components = [Background, Map, Player]
 
 const init = () => {
     var root = document.getElementById('root')
@@ -47,13 +48,6 @@ const handleChange = (getState, context) => () => {
             context.translate(0, -currentValue.player.cameraR)
             const rotation = -currentValue.player.cameraAngle + Math.PI / 2
             context.rotate(rotation)
-
-            context.fillStyle = "#FFFFFF"
-            for(const point of currentValue.background) {
-                const x = point.r * Math.cos(point.angle)
-                const y = point.r * Math.sin(point.angle)
-                context.fillRect(Math.round(x), Math.round(y), 1, 1)
-            }
 
             for(const componentInstance of componentInstances) {
                 const { canvas, angle, r, offsetX, offsetY } =
