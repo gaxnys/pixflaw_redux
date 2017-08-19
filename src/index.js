@@ -13,6 +13,12 @@ const init = () => {
     var canvas = document.createElement('canvas')
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
+
+    window.onresize = (event) => {
+        canvas.width = window.innerWidth
+        canvas.height = window.innerHeight
+    }
+
     root.appendChild(canvas)
     return canvas.getContext("2d")
 }
