@@ -24,7 +24,7 @@ const calculateAcceleration = (keys, colliding) => {
     for(const key of keys){
         switch(key) {
             case "up":
-                accY -= verticalAcc
+                accY += verticalAcc
                 break
 
             case "left":
@@ -43,12 +43,12 @@ const calculateAcceleration = (keys, colliding) => {
         }
     }
 
-    accY += GRAVITY
+    accY -= GRAVITY
 
     return { x: accX, y: accY }
 }
 
-const player = (state = { keys: new Set(), velX: 0, velY: 0, posX: 100, posY: 100 }, action) => {
+const player = (state = { keys: new Set(), velX: 0, velY: 0, posX: 50, posY: 100 }, action) => {
     var newKeys
     switch(action.type) {
         case KEY_DOWN:
@@ -75,14 +75,15 @@ const player = (state = { keys: new Set(), velX: 0, velY: 0, posX: 100, posY: 10
             return Object.assign({}, state, { keys: newKeys })
 
         case GAME_TICK:
-            const collidingIsh = (state.posY + 1 > action.windowHeight - PLAYER_HEIGHT / 2)
+            const collidingIsh = (state.posY - 1 < PLAYER_HEIGHT / 2)
             const newAcc = calculateAcceleration(state.keys, collidingIsh)
 
             var newVelY = state.velY + newAcc.y
             var newPosY = state.posY + newVelY
-            if(state.posY > action.windowHeight - PLAYER_HEIGHT / 2) {
-                newPosY = action.windowHeight - PLAYER_HEIGHT / 2
-                newVelY = (newVelY > VELOCITY_LOSS) ? -(newVelY-VELOCITY_LOSS) : 0
+            if(state.posY < PLAYER_HEIGHT / 2) {
+                newPosY = PLAYER_HEIGHT / 2
+                newVelY = (newVelY < -VELOCITY_LOSS) ? -(newVelY+VELOCITY_LOSS) : 0
+                newVelY = 0
             }
 
             const friction = collidingIsh ? GROUND_FRICTION : AIR_FRICTION

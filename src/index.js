@@ -4,9 +4,12 @@ import { createLogger } from 'redux-logger'
 import './index.css'
 import rootReducer from './reducers/index'
 import { renderTick, gameTick, keyDown, keyUp, touches } from './actions/index'
-import Root from './components/index'
+import Player from './components/Player'
+import Map from './components/Map'
+import Background from './components/Background'
 
-const components = [Root]
+
+const components = [Background, Map, Player]
 
 const init = () => {
     var root = document.getElementById('root')
@@ -17,10 +20,16 @@ const init = () => {
     window.onresize = (event) => {
         canvas.width = window.innerWidth
         canvas.height = window.innerHeight
+        var context = canvas.getContext("2d")
+        context.translate(0, canvas.height)
+        context.scale(1, -1)
     }
 
     root.appendChild(canvas)
-    return canvas.getContext("2d")
+    var context = canvas.getContext("2d")
+    context.translate(0, canvas.height)
+    context.scale(1, -1)
+    return context
 }
 
 var currentValue
@@ -37,7 +46,8 @@ const handleChange = (getState, context) => () => {
             context.clearRect(0, 0, context.canvas.width, context.canvas.height)
             for(const componentInstance of componentInstances) {
                 const { canvas, x, y } = componentInstance.render(context)
-                context.drawImage(canvas, Math.round(x), Math.round(y))
+                context.drawImage(
+                    canvas, Math.round(x), Math.round(y))
             }
         }
     }

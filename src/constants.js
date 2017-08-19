@@ -8,3 +8,5 @@ export const GROUND_FRICTION = ACCELERATION / 2
 export const AIR_FRICTION = GROUND_FRICTION / 2
 export const PLAYER_WIDTH = 20
 export const PLAYER_HEIGHT = 30
+
+export const POINTS = 10000
