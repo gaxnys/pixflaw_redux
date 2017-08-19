@@ -1,5 +1,6 @@
 import { Component } from './index'
-import { POINTS, BACKGROUND_RADIUS } from '../constants'
+import { pointsInCircle } from '../utils/random'
+import { POINTS, BACKGROUND_RADIUS, PLANET_RADIUS } from '../constants'
 
 class Background extends Component {
     constructor(getState) {
@@ -9,13 +10,11 @@ class Background extends Component {
         this.context.fillStyle = "#000000"
         this.context.fillRect(0, 0, 4000, 4000)
 
+        const points = pointsInCircle(POINTS, BACKGROUND_RADIUS)
         this.context.fillStyle = "#FFFFFF"
-        for(var i = 0; i < POINTS; i++) {
-            const angle = Math.random()*2*Math.PI
-            const u = Math.random() + Math.random()
-            const r = (u > 1) ? 2 - u : u
-            const posX = Math.round(r * BACKGROUND_RADIUS * Math.cos(angle))
-            const posY = Math.round(r * BACKGROUND_RADIUS * Math.sin(angle))
+        for(const point of points) {
+            const posX = Math.round(point.r * Math.cos(point.angle))
+            const posY = Math.round(point.r * Math.sin(point.angle))
             this.context.fillRect(2000 + posX, 2000 + posY, 1, 1)
         }
     }
@@ -32,10 +31,10 @@ class Background extends Component {
         const state = this.getState()
         return {
             canvas: this.context.canvas,
-            angle: 0,
-            r: 0,
+            angle: state.player.cameraAngle,
+            r: state.player.cameraR * 1.2 - PLANET_RADIUS,
             offsetX: 2000,
-            offsetY: 2000
+            offsetY: 2000,
         }
     }
 }

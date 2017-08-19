@@ -42,9 +42,6 @@ const handleChange = (getState, context) => () => {
             context.save()
             const canvas = context.canvas
             context.translate(canvas.width / 2, canvas.height * 3 / 4)
-            const denom = (process.env.NODE_ENV === "development") ? 40 : 120
-            const scale = Math.min(window.innerHeight / 9, window.innerWidth / 16) / denom
-            //context.scale(scale, -scale)
             context.scale(1, -1)
             context.translate(0, -currentValue.player.cameraR)
             const rotation = -currentValue.player.cameraAngle + Math.PI / 2
