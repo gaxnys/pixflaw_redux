@@ -52,14 +52,23 @@ class Player extends Component {
     }
 
     renderToContext(context, state) {
+        const wins = state.level.wins
         context.save()
         context.fillStyle = "#007DFF"
         context.rotate(state.player.posAngle)
         context.translate(state.player.posR, 0)
         context.fillRect(- PLAYER_HEIGHT / 2,
-                            - PLAYER_WIDTH / 2,
-                              PLAYER_HEIGHT,
-                              PLAYER_WIDTH)
+                       - PLAYER_WIDTH / 2,
+                         PLAYER_HEIGHT,
+                         PLAYER_WIDTH)
+        context.fillStyle = "#FFFFFF"
+        for(var i = 0; i < wins; i++) {
+            var y = Math.floor(i / 2 + 1)
+            var x = Math.floor(i % 2 + 1)
+            context.fillRect(- PLAYER_HEIGHT / 2 + PLAYER_HEIGHT / 4 * y - 2,
+                           - PLAYER_WIDTH / 2 + PLAYER_WIDTH / 3 * x - 2,
+                             4, 4)
+        }
         context.restore()
     }
 }
