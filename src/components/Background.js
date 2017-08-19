@@ -29,7 +29,7 @@ class Background extends Component {
         const state = this.getState()
         return {
             canvas: this.context.canvas,
-            x: 0,
+            x: -1000,
             y: 0,
         }
     }

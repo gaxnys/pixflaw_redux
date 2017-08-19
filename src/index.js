@@ -12,6 +12,12 @@ import Background from './components/Background'
 const components = [Background, Map, Player]
 
 const init = () => {
+    const prepareContext = (context) => {
+        const canvas = context.canvas
+        context.translate(canvas.width / 2, canvas.height)
+        context.scale(1, -1)
+        context.translate(0, -1000)
+    }
     var root = document.getElementById('root')
     var canvas = document.createElement('canvas')
     canvas.width = window.innerWidth
@@ -21,14 +27,12 @@ const init = () => {
         canvas.width = window.innerWidth
         canvas.height = window.innerHeight
         var context = canvas.getContext("2d")
-        context.translate(0, canvas.height)
-        context.scale(1, -1)
+        prepareContext(context)
     }
 
     root.appendChild(canvas)
     var context = canvas.getContext("2d")
-    context.translate(0, canvas.height)
-    context.scale(1, -1)
+    prepareContext(context)
     return context
 }
 

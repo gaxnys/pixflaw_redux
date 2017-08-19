@@ -18,8 +18,8 @@ class Player extends Component {
         }
 
         return this.updatePosition = (
-            previousValue.player.posX !== currentValue.player.posX ||
-            previousValue.player.posY !== currentValue.player.posY
+            previousValue.player.posAngle !== currentValue.player.posAngle ||
+            previousValue.player.posR !== currentValue.player.posR
         )
     }
 
@@ -27,8 +27,8 @@ class Player extends Component {
         const state = this.getState()
         return {
             canvas: this.context.canvas,
-            x: state.player.posX - PLAYER_WIDTH/2,
-            y: state.player.posY - PLAYER_HEIGHT/2
+            x: state.player.posR * Math.cos(state.player.posAngle) - PLAYER_WIDTH / 2,
+            y: state.player.posR * Math.sin(state.player.posAngle) - PLAYER_HEIGHT / 2
         }
     }
 }

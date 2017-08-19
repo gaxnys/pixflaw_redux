@@ -13,8 +13,8 @@ const keyToDirection = {
     " ": "up",
 }
 
-const calculateAcceleration = (keys, colliding) => {
-    var accX = 0, accY = 0
+const calculateAcceleration = (keys, posR, colliding) => {
+    var accAngle = 0, accR = 0
     var verticalAcc = 0
     var horizontalAcc = FLY_ACCELERATION
     if(colliding) {
@@ -24,18 +24,18 @@ const calculateAcceleration = (keys, colliding) => {
     for(const key of keys){
         switch(key) {
             case "up":
-                accY += verticalAcc
+                accR += verticalAcc
                 break
 
             case "left":
-                accX -= horizontalAcc
+                accAngle += Math.tan(horizontalAcc / posR)
                 break
 
             case "down":
                 break
 
             case "right":
-                accX += horizontalAcc
+                accAngle -= Math.tan(horizontalAcc / posR)
                 break
 
             default:
@@ -43,12 +43,12 @@ const calculateAcceleration = (keys, colliding) => {
         }
     }
 
-    accY -= GRAVITY
+    accR -= GRAVITY
 
-    return { x: accX, y: accY }
+    return { r: accR, angle: accAngle }
 }
 
-const player = (state = { keys: new Set(), velX: 0, velY: 0, posX: 50, posY: 100 }, action) => {
+const player = (state = { keys: new Set(), velR: 0, velAngle: 0, posR: 1100, posAngle: Math.PI/2 }, action) => {
     var newKeys
     switch(action.type) {
         case KEY_DOWN:
@@ -75,31 +75,32 @@ const player = (state = { keys: new Set(), velX: 0, velY: 0, posX: 50, posY: 100
             return Object.assign({}, state, { keys: newKeys })
 
         case GAME_TICK:
-            const collidingIsh = (state.posY - 1 < PLAYER_HEIGHT / 2)
-            const newAcc = calculateAcceleration(state.keys, collidingIsh)
+            const collidingIsh = (state.posR - PLAYER_HEIGHT / 2 - 1 < 1200)
+            const newAcc = calculateAcceleration(state.keys, state.posR, collidingIsh)
 
-            var newVelY = state.velY + newAcc.y
-            var newPosY = state.posY + newVelY
-            if(state.posY < PLAYER_HEIGHT / 2) {
-                newPosY = PLAYER_HEIGHT / 2
-                newVelY = (newVelY < -VELOCITY_LOSS) ? -(newVelY+VELOCITY_LOSS) : 0
-                newVelY = 0
+            var newVelR = state.velR + newAcc.r
+            var newPosR = state.posR + newVelR
+            if(state.posR - PLAYER_HEIGHT / 2 < 1200) {
+                newPosR = 1200 + PLAYER_HEIGHT / 2
+                newVelR = (newVelR < -VELOCITY_LOSS) ? -(newVelR+VELOCITY_LOSS) : 0
+                newVelR = 0
             }
 
             const friction = collidingIsh ? GROUND_FRICTION : AIR_FRICTION
 
-            var newVelX = state.velX + newAcc.x
+            var newVelAngle = state.velAngle + newAcc.angle
 
-            const frictionAcc = Math.sign(-state.velX) * friction
-            newVelX += frictionAcc
+            const frictionAcc = Math.sign(-state.velAngle) * friction
+            newVelAngle +=  Math.tan(frictionAcc / state.posR)
 
-            if(Math.abs(newVelX) < friction ) {
-                newVelX = 0
+            if(Math.abs(newVelAngle) < Math.tan(friction / state.posR)) {
+                newVelAngle = 0
             }
-            const newPosX = state.posX + newVelX
+            const newPosAngle = state.posAngle + newVelAngle
 
             return Object.assign({}, state, {
-                velX: newVelX, velY: newVelY, posX: newPosX, posY: newPosY })
+                velAngle: newVelAngle, velR: newVelR,
+                posAngle: newPosAngle, posR: newPosR})
 
         default:
             return state
