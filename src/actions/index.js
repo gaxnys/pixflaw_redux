@@ -33,3 +33,8 @@ export const LEVEL_WIN = 'LEVEL_WIN'
 export const levelWin = () => ({
     type: LEVEL_WIN
 })
+
+export const RESET_LEVEL = 'RESET_LEVEL'
+export const resetLevel = () => ({
+    type: RESET_LEVEL
+})

@@ -16,7 +16,7 @@ const keyToDirection = {
 
 const calculateAcceleration = (keys, posR, colliding) => {
     var accAngle = 0, accR = 0
-    var verticalAcc = JETPACK_ACCELERATION
+    var verticalAcc = JETPACK_ACCELERATION * PLANET_RADIUS / Math.pow(posR, 2)
     var horizontalAcc = FLY_ACCELERATION
     if(colliding) {
         verticalAcc = JUMP_ACCELERATION

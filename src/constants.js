@@ -1,6 +1,6 @@
 export const ACCELERATION = 0.5
-export const JUMP_ACCELERATION = 6
-export const JETPACK_ACCELERATION = 0
+export const JUMP_ACCELERATION = 3
+export const JETPACK_ACCELERATION = 350
 export const RUN_ACCELERATION = 0.3
 export const FLY_ACCELERATION = RUN_ACCELERATION / 2
 export const VELOCITY_LOSS = 10

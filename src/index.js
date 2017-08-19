@@ -3,7 +3,7 @@ import { createLogger } from 'redux-logger'
 
 import './index.css'
 import rootReducer from './reducers/index'
-import { renderTick, gameTick, keyDown, keyUp, touches, levelWin } from './actions/index'
+import { renderTick, gameTick, keyDown, keyUp, touches, levelWin, resetLevel } from './actions/index'
 import Player from './components/Player'
 import Map from './components/Map'
 import Background from './components/Background'
@@ -88,7 +88,12 @@ window.setInterval(() => {
     store.dispatch(gameTick())
 }, 10)
 
-window.onkeydown = (event) => store.dispatch(keyDown(event.key))
+window.onkeydown = (event) => {
+    if(event.key === "r") {
+        store.dispatch(resetLevel())
+    }
+    store.dispatch(keyDown(event.key))
+}
 window.onkeyup = (event) => store.dispatch(keyUp(event.key))
 
 document.body.addEventListener('touchstart', (event) => {
