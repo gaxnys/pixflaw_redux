@@ -79,7 +79,7 @@ const animationTicker = (timestamp) => {
     if(state.player.posR > state.level.goalRadius) {
         store.dispatch(levelWin())
     }
-    store.dispatch(gameTick())
+    store.dispatch(gameTick(performance.now()))
     window.requestAnimationFrame(animationTicker)
 }
 window.requestAnimationFrame(animationTicker)

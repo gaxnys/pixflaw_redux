@@ -14,7 +14,7 @@ const keyToDirection = {
     " ": "up",
 }
 
-const calculateAcceleration = (keys, posR, colliding) => {
+const calculateAcceleration = (keys, posR, colliding, timeDelta) => {
     var accAngle = 0, accR = 0
     var verticalAcc = JETPACK_ACCELERATION
     var horizontalAcc = FLY_ACCELERATION
@@ -29,14 +29,14 @@ const calculateAcceleration = (keys, posR, colliding) => {
                 break
 
             case "left":
-                accAngle += Math.atan(horizontalAcc / posR)
+                accAngle += Math.atan(horizontalAcc / posR) * (timeDelta / 10)
                 break
 
             case "down":
                 break
 
             case "right":
-                accAngle -= Math.atan(horizontalAcc / posR)
+                accAngle -= Math.atan(horizontalAcc / posR) * (timeDelta / 10)
                 break
 
             default:
@@ -44,7 +44,7 @@ const calculateAcceleration = (keys, posR, colliding) => {
         }
     }
 
-    accR -= PLANET_MASS / Math.pow(posR, 2)
+    accR -= (PLANET_MASS / Math.pow(posR, 2)) * (timeDelta / 10)
 
     return { r: accR, angle: accAngle }
 }
@@ -90,7 +90,8 @@ const player = (
     state = { keys: new Set(),
               velR: 0, velAngle: 0,
               posR: 2100, posAngle: Math.PI/2,
-              cameraR: 2100, cameraAngle: Math.PI/2
+              cameraR: 2100, cameraAngle: Math.PI/2,
+              timestamp: 0
     }, action, levelState
 ) => {
     var newKeys
@@ -122,14 +123,18 @@ const player = (
             const collisions = checkCollisions(state.posR, state.posAngle, levelState.level)
             const collidingIsh =
                 (state.posR - PLAYER_HEIGHT / 2 - 1 < levelState.planetRadius) || collisions.almost
-            const newAcc = calculateAcceleration(state.keys, state.posR, collidingIsh)
+
+            const timeDelta = action.timestamp - state.timestamp
+
+            const newAcc = calculateAcceleration(
+                state.keys, state.posR, collidingIsh, timeDelta)
 
             var newVelR = Math.min(state.velR + newAcc.r, SPEED_LIMIT)
             if(collisions.up && state.velR > 0 || collisions.down && state.velR < 0) {
                 newVelR = 0
             }
-            var newPosR = state.posR + newVelR +
-                          collisions.down + collisions.up
+            var newPosR = state.posR + (newVelR +
+                          collisions.down + collisions.up) * (timeDelta / 10)
 
             if(state.posR - PLAYER_HEIGHT / 2 < levelState.planetRadius) {
                 newPosR = levelState.planetRadius + PLAYER_HEIGHT / 2
@@ -141,7 +146,7 @@ const player = (
 
             var newVelAngle = state.velAngle + newAcc.angle
 
-            const frictionAcc = Math.sign(-state.velAngle) * friction
+            const frictionAcc = Math.sign(-state.velAngle) * friction * (timeDelta / 10)
             newVelAngle +=  Math.tan(frictionAcc / state.posR)
 
             if(Math.abs(newVelAngle) < Math.tan(friction / state.posR)) {
@@ -151,8 +156,8 @@ const player = (
             if(collisions.left && state.velAngle > 0 || collisions.right && state.velAngle < 0) {
                 newVelAngle = 0
             }
-            var newPosAngle = state.posAngle + newVelAngle +
-                              collisions.left + collisions.right
+            var newPosAngle = state.posAngle + (newVelAngle +
+                              collisions.left + collisions.right) * (timeDelta / 10)
 
             if(newPosAngle > 2 * Math.PI) {
                 newPosAngle -= 2 * Math.PI
@@ -181,6 +186,7 @@ const player = (
                 velAngle: newVelAngle, velR: newVelR,
                 posAngle: newPosAngle, posR: newPosR,
                 cameraAngle: newCameraAngle, cameraR: newCameraR,
+                timestamp: action.timestamp
             })
 
         case LEVEL_WIN:

@@ -4,9 +4,9 @@ export const renderTick = () => ({
 })
 
 export const GAME_TICK = 'GAME_TICK'
-export const gameTick = (scale) => ({
+export const gameTick = (timestamp) => ({
     type: GAME_TICK,
-    scale
+    timestamp
 })
 
 export const KEY_DOWN = 'KEY_DOWN'
