@@ -55,6 +55,9 @@ const handleChange = (getState, context) => () => {
                 context.drawImage(
                     canvas, Math.round(x - offsetX), Math.round(y - offsetY))
             }
+
+            componentInstances[1].renderToContext(context, 0, currentValue)
+
             context.restore()
         }
     }

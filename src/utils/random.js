@@ -3,7 +3,12 @@ export const pointsInCircle = (
         var points = []
         while(points.length < numPoints) {
             const angle = Math.random()*2*Math.PI
-            const u = (uniform) ? Math.random() + Math.random() : Math.random()
+            var u
+            if(uniform) {
+                u = Math.random() + Math.random()
+            } else {
+                u = Math.pow(Math.random(), 2)
+            }
             const r = (u > 1) ? 2 - u : u
             const radius = r * maxRadius
             if(radius > minRadius) {

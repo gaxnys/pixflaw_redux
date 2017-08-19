@@ -60,7 +60,7 @@ const checkCollisions = (posR, posAngle, platforms) => {
 
         sides.almost = sides.almost || (
             Math.abs(radiusDiff) < playerHeightPlatform + 1 &&
-            Math.abs(angleDiff) < Math.atan((playerWidthPlatform) / posR) &&
+            Math.abs(angleDiff) < Math.atan((playerWidthPlatform - 3) / posR) &&
             radiusDiff < 0)
 
         if(Math.abs(radiusDiff) > playerHeightPlatform) {

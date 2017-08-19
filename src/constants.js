@@ -14,6 +14,6 @@ export const SPEED_LIMIT = 10
 
 export const POINTS = 10000
 export const BACKGROUND_RADIUS = 3000
-export const LEVEL_RADIUS = 2000
+export const LEVEL_RADIUS = 3000
 export const PLANET_RADIUS = 1000
 export const CAMERA_INERTIA = 20
