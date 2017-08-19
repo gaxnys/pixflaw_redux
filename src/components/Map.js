@@ -39,10 +39,10 @@ class Map extends Component {
         }
     }
 
-    renderToContext(context, center, state) {
+    renderToContext(context, state, center) {
         context.strokeStyle = "#999999"
         context.lineWidth = PLATFORM_SIDE
-        for(const point of state.level) {
+        for(const point of state.level.level) {
             const angleDiff = Math.tan(PLATFORM_SIDE / 2 / point.r)
 
             context.beginPath()
@@ -54,13 +54,13 @@ class Map extends Component {
 
         context.fillStyle = "#666666"
         context.beginPath()
-        context.arc(center, center, PLANET_RADIUS, 0, 2 * Math.PI)
+        context.arc(center, center, state.level.planetRadius, 0, 2 * Math.PI)
         context.fill()
 
         context.strokeStyle = "#00FF00"
         context.lineWidth = 10
         context.beginPath()
-        context.arc(center, center, LEVEL_RADIUS, 0, 2 * Math.PI)
+        context.arc(center, center, state.level.goalRadius, 0, 2 * Math.PI)
         context.stroke()
 
         for(var i = 0; i < this.points.length; i++) {

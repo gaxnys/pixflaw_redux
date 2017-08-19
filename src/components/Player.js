@@ -50,6 +50,18 @@ class Player extends Component {
             offsetY: PLAYER_HEIGHT * 2
         }
     }
+
+    renderToContext(context, state) {
+        context.save()
+        context.fillStyle = "#007DFF"
+        context.rotate(state.player.posAngle)
+        context.translate(state.player.posR, 0)
+        context.fillRect(- PLAYER_HEIGHT / 2,
+                            - PLAYER_WIDTH / 2,
+                              PLAYER_HEIGHT,
+                              PLAYER_WIDTH)
+        context.restore()
+    }
 }
 
 export default Player

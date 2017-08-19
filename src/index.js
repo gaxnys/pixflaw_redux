@@ -3,7 +3,7 @@ import { createLogger } from 'redux-logger'
 
 import './index.css'
 import rootReducer from './reducers/index'
-import { renderTick, gameTick, keyDown, keyUp, touches } from './actions/index'
+import { renderTick, gameTick, keyDown, keyUp, touches, levelWin } from './actions/index'
 import Player from './components/Player'
 import Map from './components/Map'
 import Background from './components/Background'
@@ -41,22 +41,15 @@ const handleChange = (getState, context) => () => {
             context.fillRect(0, 0, context.canvas.width, context.canvas.height)
             context.save()
             const canvas = context.canvas
-            context.translate(canvas.width / 2, canvas.height * 3 / 4)
+            context.translate(canvas.width / 2, canvas.height / 2)
             context.scale(1, -1)
             context.translate(0, -currentValue.player.cameraR)
             const rotation = -currentValue.player.cameraAngle + Math.PI / 2
             context.rotate(rotation)
 
             for(const componentInstance of componentInstances) {
-                const { canvas, angle, r, offsetX, offsetY } =
-                    componentInstance.render(context)
-                const x = r * Math.cos(angle)
-                const y = r * Math.sin(angle)
-                context.drawImage(
-                    canvas, Math.round(x - offsetX), Math.round(y - offsetY))
+                componentInstance.renderToContext(context, currentValue, 0)
             }
-
-            componentInstances[1].renderToContext(context, 0, currentValue)
 
             context.restore()
         }
@@ -88,7 +81,10 @@ const animationTicker = (timestamp) => {
 window.requestAnimationFrame(animationTicker)
 
 window.setInterval(() => {
-    const scale = Math.min(window.innerHeight / 9, window.innerWidth / 16) / 120
+    const state = store.getState()
+    if(state.player.posR > state.level.goalRadius) {
+        store.dispatch(levelWin())
+    }
     store.dispatch(gameTick())
 }, 10)
 

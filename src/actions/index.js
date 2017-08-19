@@ -28,3 +28,8 @@ export const touches = (touches, windowWidth, windowHeight) => ({
     windowWidth,
     windowHeight
 })
+
+export const LEVEL_WIN = 'LEVEL_WIN'
+export const levelWin = () => ({
+    type: LEVEL_WIN
+})

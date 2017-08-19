@@ -7,7 +7,7 @@ export const pointsInCircle = (
             if(uniform) {
                 u = Math.random() + Math.random()
             } else {
-                u = Math.pow(Math.random(), 2)
+                u = Math.pow(Math.random(), 3)
             }
             const r = (u > 1) ? 2 - u : u
             const radius = r * maxRadius

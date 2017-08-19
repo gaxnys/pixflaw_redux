@@ -1,4 +1,4 @@
-import { RENDER_TICK, GAME_TICK, KEY_DOWN, KEY_UP, TOUCHES } from '../actions/index'
+import { RENDER_TICK, GAME_TICK, KEY_DOWN, KEY_UP, TOUCHES, LEVEL_WIN } from '../actions/index'
 import { ACCELERATION, JUMP_ACCELERATION, RUN_ACCELERATION, FLY_ACCELERATION, GROUND_FRICTION, AIR_FRICTION, VELOCITY_LOSS, PLAYER_WIDTH, PLAYER_HEIGHT, PLATFORM_SIDE, PLANET_RADIUS, CAMERA_INERTIA, PLANET_MASS, SPEED_LIMIT } from '../constants.js'
 import { normalize } from '../utils/trig'
 
@@ -89,8 +89,8 @@ const checkCollisions = (posR, posAngle, platforms) => {
 const player = (
     state = { keys: new Set(),
               velR: 0, velAngle: 0,
-              posR: 1100, posAngle: Math.PI/2,
-              cameraR: 1100, cameraAngle: Math.PI/2
+              posR: 2100, posAngle: Math.PI/2,
+              cameraR: 2100, cameraAngle: Math.PI/2
     }, action, levelState
 ) => {
     var newKeys
@@ -119,9 +119,9 @@ const player = (
             return Object.assign({}, state, { keys: newKeys })
 
         case GAME_TICK:
-            const collisions = checkCollisions(state.posR, state.posAngle, levelState)
+            const collisions = checkCollisions(state.posR, state.posAngle, levelState.level)
             const collidingIsh =
-                (state.posR - PLAYER_HEIGHT / 2 - 1 < PLANET_RADIUS) || collisions.almost
+                (state.posR - PLAYER_HEIGHT / 2 - 1 < levelState.planetRadius) || collisions.almost
             const newAcc = calculateAcceleration(state.keys, state.posR, collidingIsh)
 
             var newVelR = Math.min(state.velR + newAcc.r, SPEED_LIMIT)
@@ -131,8 +131,8 @@ const player = (
             var newPosR = state.posR + newVelR +
                           collisions.down + collisions.up
 
-            if(state.posR - PLAYER_HEIGHT / 2 < PLANET_RADIUS) {
-                newPosR = PLANET_RADIUS + PLAYER_HEIGHT / 2
+            if(state.posR - PLAYER_HEIGHT / 2 < levelState.planetRadius) {
+                newPosR = levelState.planetRadius + PLAYER_HEIGHT / 2
                 newVelR = (newVelR < -VELOCITY_LOSS) ? -(newVelR+VELOCITY_LOSS) : 0
                 newVelR = 0
             }
@@ -182,6 +182,9 @@ const player = (
                 posAngle: newPosAngle, posR: newPosR,
                 cameraAngle: newCameraAngle, cameraR: newCameraR,
             })
+
+        case LEVEL_WIN:
+            Object.assign({}, state, { playerPosR: PLANET_RADIUS })
 
         default:
             return state

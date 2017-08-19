@@ -5,18 +5,8 @@ import { POINTS, BACKGROUND_RADIUS, PLANET_RADIUS } from '../constants'
 class Background extends Component {
     constructor(getState) {
         super(getState)
-        this.context.canvas.width = 4000
-        this.context.canvas.height = 4000
-        this.context.fillStyle = "#000000"
-        this.context.fillRect(0, 0, 4000, 4000)
 
-        const points = pointsInCircle(POINTS, BACKGROUND_RADIUS)
-        this.context.fillStyle = "#FFFFFF"
-        for(const point of points) {
-            const posX = Math.round(point.r * Math.cos(point.angle))
-            const posY = Math.round(point.r * Math.sin(point.angle))
-            this.context.fillRect(2000 + posX, 2000 + posY, 1, 1)
-        }
+        this.points = pointsInCircle(POINTS, BACKGROUND_RADIUS)
     }
 
     shouldCanvasUpdate(previousValue, currentValue) {
@@ -35,6 +25,19 @@ class Background extends Component {
             r: state.player.cameraR * 0.9 - PLANET_RADIUS,
             offsetX: 2000,
             offsetY: 2000,
+        }
+    }
+
+    renderToContext(context, state) {
+        context.fillStyle = "#FFFFFF"
+        const r = state.player.cameraR * 0.9 - PLANET_RADIUS
+        const angle = state.player.cameraAngle
+        for(const point of this.points) {
+            const posX = Math.round(point.r * Math.cos(point.angle) +
+                                    r * Math.cos(angle))
+            const posY = Math.round(point.r * Math.sin(point.angle) +
+                                    r * Math.sin(angle))
+            context.fillRect(posX, posY, 1, 1)
         }
     }
 }
