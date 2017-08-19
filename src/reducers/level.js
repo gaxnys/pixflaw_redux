@@ -20,7 +20,7 @@ const generateLevel = (wins) => {
         PLATFORMS,
         getGoalRadius(wins),
         getPlanetRadius(wins) ,
-        80, false)
+        60, false)
 }
 
 const defaultWins = 0

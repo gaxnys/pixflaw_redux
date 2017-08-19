@@ -10,7 +10,7 @@ export const pointsInCircle = (
                 u = Math.pow(Math.random(), 3)
             }
             const r = (u > 1) ? 2 - u : u
-            const radius = r * maxRadius
+            const radius = r * (maxRadius - minRadius) + minRadius
             if(radius > minRadius) {
                 const posX = Math.round(radius * Math.cos(angle))
                 const posY = Math.round(radius * Math.sin(angle))
