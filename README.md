@@ -2,6 +2,6 @@
 
 ## 2D platformer with redux
 
-This file is a stub. More content later.
+Play here: https://gaxnys.github.io/pixflaw_redux/
 
 Contact: http://www.stockhaus.ninja/#contact
