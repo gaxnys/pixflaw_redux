@@ -72,17 +72,21 @@ if(process.env.NODE_ENV === "development") {
 const componentInstances = components.map(
     (component) => new component(store.getState))
 
-var unsubscribe = store.subscribe(handleChange(store.getState, context))
+const render = handleChange(store.getState, context)
 
 const animationTicker = (timestamp) => {
+    render()
+    window.requestAnimationFrame(animationTicker)
+}
+window.requestAnimationFrame(animationTicker)
+
+window.setInterval(() => {
     const state = store.getState()
     if(state.player.posR > state.level.goalRadius) {
         store.dispatch(levelWin())
     }
     store.dispatch(gameTick())
-    window.requestAnimationFrame(animationTicker)
-}
-window.requestAnimationFrame(animationTicker)
+}, 10)
 
 window.onkeydown = (event) => store.dispatch(keyDown(event.key))
 window.onkeyup = (event) => store.dispatch(keyUp(event.key))
