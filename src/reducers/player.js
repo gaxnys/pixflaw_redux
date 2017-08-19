@@ -99,12 +99,30 @@ const player = (state = { keys: new Set(),
             if(Math.abs(newVelAngle) < Math.tan(friction / state.posR)) {
                 newVelAngle = 0
             }
-            const newPosAngle = state.posAngle + newVelAngle
+            var newPosAngle = state.posAngle + newVelAngle
+
+            if(newPosAngle > 2 * Math.PI) {
+                newPosAngle -= 2 * Math.PI
+            } else if(newPosAngle < 0) {
+                newPosAngle += 2 * Math.PI
+            }
 
             const newCameraR = ((state.cameraR * CAMERA_INERTIA + newPosR) /
                 (CAMERA_INERTIA + 1))
-            const newCameraAngle = ((state.cameraAngle * CAMERA_INERTIA + newPosAngle) /
-                (CAMERA_INERTIA + 1))
+
+            var angleDiff = newPosAngle - state.cameraAngle
+            if(angleDiff > Math.PI) {
+                angleDiff -= 2 * Math.PI
+            } else if(angleDiff < - Math.PI) {
+                angleDiff += 2 * Math.PI
+            }
+
+            var newCameraAngle = state.cameraAngle + angleDiff / CAMERA_INERTIA
+            if(newCameraAngle > 2 * Math.PI) {
+                newCameraAngle -= 2 * Math.PI
+            } else if(newCameraAngle < 0) {
+                newCameraAngle += 2 * Math.PI
+            }
 
             return Object.assign({}, state, {
                 velAngle: newVelAngle, velR: newVelR,
