@@ -91,8 +91,8 @@ const checkCollisions = (posR, posAngle, platforms) => {
 const player = (
     state = { keys: new Set(),
               velR: 0, velAngle: 0,
-              posR: 2100, posAngle: Math.PI/2,
-              cameraR: 2100, cameraAngle: Math.PI/2
+              posR: 3100, posAngle: Math.PI/2,
+              cameraR: 3100, cameraAngle: Math.PI/2
     }, action, levelState
 ) => {
     var newKeys
