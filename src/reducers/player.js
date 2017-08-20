@@ -1,5 +1,5 @@
 import { RENDER_TICK, GAME_TICK, KEY_DOWN, KEY_UP, TOUCHES, LEVEL_WIN } from '../actions/index'
-import { ACCELERATION, JUMP_ACCELERATION, JETPACK_ACCELERATION, RUN_ACCELERATION, FLY_ACCELERATION, GROUND_FRICTION, AIR_FRICTION, VELOCITY_LOSS, PLAYER_WIDTH, PLAYER_HEIGHT, PLATFORM_SIDE, PLANET_RADIUS, CAMERA_INERTIA, PLANET_MASS, SPEED_LIMIT } from '../constants.js'
+import { ACCELERATION, JUMP_ACCELERATION, JETPACK_ACCELERATION, RUN_ACCELERATION, FLY_ACCELERATION, GROUND_FRICTION, AIR_FRICTION, VELOCITY_LOSS, PLAYER_WIDTH, PLAYER_HEIGHT, PLATFORM_SIDE, PLANET_RADIUS, CAMERA_INERTIA, PLANET_MASS, SPEED_LIMIT, DOWN_CONSTANT } from '../constants.js'
 import { normalize } from '../utils/trig'
 
 const keyToDirection = {
@@ -16,7 +16,7 @@ const keyToDirection = {
 
 const calculateAcceleration = (keys, posR, colliding) => {
     var accAngle = 0, accR = 0
-    var verticalAcc = JETPACK_ACCELERATION * PLANET_RADIUS / Math.pow(posR, 2)
+    var verticalAcc = JETPACK_ACCELERATION * PLANET_MASS / Math.pow(posR, 2)
     var horizontalAcc = FLY_ACCELERATION
     if(colliding) {
         verticalAcc = JUMP_ACCELERATION
@@ -33,6 +33,7 @@ const calculateAcceleration = (keys, posR, colliding) => {
                 break
 
             case "down":
+                accR -= DOWN_CONSTANT
                 break
 
             case "right":
@@ -45,6 +46,7 @@ const calculateAcceleration = (keys, posR, colliding) => {
     }
 
     accR -= PLANET_MASS / Math.pow(posR, 2)
+    console.log(PLANET_MASS / Math.pow(posR, 2))
 
     return { r: accR, angle: accAngle }
 }

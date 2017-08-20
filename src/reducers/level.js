@@ -11,7 +11,7 @@ const getPlanetRadius = (wins) => (
 )
 
 const getGoalRadius = (wins) => (
-    LEVEL_RADIUS * getDifficulty(wins) / 4
+    LEVEL_RADIUS * 1.5 ** wins
 )
 
 const generateLevel = (wins) => {
