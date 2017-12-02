@@ -1,5 +1,5 @@
 import { RENDER_TICK, GAME_TICK, KEY_DOWN, KEY_UP, TOUCHES, LEVEL_WIN } from '../actions/index'
-import { ACCELERATION, JUMP_ACCELERATION, JETPACK_ACCELERATION, RUN_ACCELERATION, FLY_ACCELERATION, GROUND_FRICTION, AIR_FRICTION, VELOCITY_LOSS, PLAYER_WIDTH, PLAYER_HEIGHT, PLATFORM_SIDE, PLANET_RADIUS, CAMERA_INERTIA, PLANET_MASS, SPEED_LIMIT, DOWN_CONSTANT } from '../constants.js'
+import { ACCELERATION, JUMP_ACCELERATION, JETPACK_ACCELERATION, RUN_ACCELERATION, FLY_ACCELERATION, GROUND_FRICTION, AIR_FRICTION, VELOCITY_LOSS, PLAYER_WIDTH, PLAYER_HEIGHT, PLATFORM_SIDE, PLANET_RADIUS, CAMERA_INERTIA, PLANET_MASS, SPEED_LIMIT, DOWN_CONSTANT, TOUCH_DEBOUNCE_LIMIT } from '../constants.js'
 import { normalize } from '../utils/trig'
 
 const keyToDirection = {
@@ -46,7 +46,6 @@ const calculateAcceleration = (keys, posR, colliding) => {
     }
 
     accR -= PLANET_MASS / Math.pow(posR, 2)
-    console.log(PLANET_MASS / Math.pow(posR, 2))
 
     return { r: accR, angle: accAngle }
 }
@@ -92,7 +91,8 @@ const player = (
     state = { keys: new Set(),
               velR: 0, velAngle: 0,
               posR: 3100, posAngle: Math.PI/2,
-              cameraR: 3100, cameraAngle: Math.PI/2
+              cameraR: 3100, cameraAngle: Math.PI/2,
+              debounce: 0
     }, action, levelState
 ) => {
     var newKeys
@@ -110,14 +110,22 @@ const player = (
         case TOUCHES:
             newKeys = new Set()
             if(action.touches.length === 2) {
+                if(state.debounce === TOUCH_DEBOUNCE_LIMIT) {
+                    newKeys = new Set(state.keys)
+                }
                 newKeys.add("up")
             } else if(action.touches.length > 0) {
+                if(state.keys.has("up")) {
+                    newKeys.add("up")
+                }
+
                 if(action.touches[0].clientX > action.windowWidth / 2) {
                     newKeys.add("right")
                 } else {
                     newKeys.add("left")
                 }
             }
+            
             return Object.assign({}, state, { keys: newKeys })
 
         case GAME_TICK:
@@ -179,10 +187,18 @@ const player = (
                 newCameraAngle += 2 * Math.PI
             }
 
+            let newDebounce = state.debounce
+            if(state.keys.size == 0) {
+                newDebounce = 0
+            } else if(state.debounce < TOUCH_DEBOUNCE_LIMIT) {
+                newDebounce += 1
+            }
+
             return Object.assign({}, state, {
                 velAngle: newVelAngle, velR: newVelR,
                 posAngle: newPosAngle, posR: newPosR,
                 cameraAngle: newCameraAngle, cameraR: newCameraR,
+                debounce: newDebounce,
             })
 
         case LEVEL_WIN:

@@ -16,7 +16,9 @@ export const DOWN_CONSTANT = 1
 
 export const POINTS = 20000
 export const BACKGROUND_RADIUS = 4000
-export const LEVEL_RADIUS = 6000
+export const LEVEL_RADIUS = 4000
 export const PLANET_RADIUS = 3000
-export const PLATFORMS = 2000
+export const PLATFORMS = 1000
 export const CAMERA_INERTIA = 20
+
+export const TOUCH_DEBOUNCE_LIMIT = 10
