@@ -6,9 +6,8 @@ import rootReducer from './reducers/index'
 import { gameTick, keyDown, keyUp, touches, levelWin, resetLevel } from './actions/index'
 import Player from './components/Player'
 import Map from './components/Map'
-import Background from './components/Background'
 
-const components = [Background, Map, Player]
+const components = [Map, Player]
 
 const init = () => {
     var root = document.getElementById('root')
