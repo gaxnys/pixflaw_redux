@@ -38,29 +38,29 @@ class Map extends Component {
         }
     }
 
-    renderToContext(context, state, center) {
+    renderToContext(context, state, scale) {
         context.fillStyle = "#999999"
 
         for(const point of state.level.level) {
             context.save()
 
             context.rotate(point.angle)
-            context.fillRect(point.r - constants.PLATFORM_SIDE / 2,
-                             - constants.PLATFORM_SIDE / 2,
-                             constants.PLATFORM_SIDE,
-                             constants.PLATFORM_SIDE)
+            context.fillRect((point.r - constants.PLATFORM_SIDE / 2) * scale,
+                             - constants.PLATFORM_SIDE / 2 * scale,
+                             constants.PLATFORM_SIDE * scale,
+                             constants.PLATFORM_SIDE * scale)
             context.restore()
         }
 
         context.fillStyle = "#666666"
         context.beginPath()
-        context.arc(center, center, state.level.planetRadius, 0, 2 * Math.PI)
+        context.arc(0, 0, state.level.planetRadius * scale, 0, 2 * Math.PI)
         context.fill()
 
         context.strokeStyle = "#00FF00"
         context.lineWidth = 10
         context.beginPath()
-        context.arc(center, center, state.level.goalRadius, 0, 2 * Math.PI)
+        context.arc(0, 0, state.level.goalRadius * scale, 0, 2 * Math.PI)
         context.stroke()
 
         for(var i = 0; i < this.points.length; i++) {
@@ -69,7 +69,12 @@ class Map extends Component {
 
             context.fillStyle =
                 "hsl(0, 0%, " + Math.round(random * 100) + "%)"
-            context.fillRect(center + point.posX, center + point.posY, 5, 5)
+            context.fillRect(
+                point.posX * scale,
+                point.posY * scale,
+                5 * scale,
+                5 * scale
+            )
         }
     }
 }

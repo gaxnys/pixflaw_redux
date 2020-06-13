@@ -15,16 +15,19 @@ const init = () => {
     var canvas = document.createElement('canvas')
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
+    scale = Math.min(canvas.width / 1920, canvas.height / 1080)
 
     window.onresize = (event) => {
         canvas.width = window.innerWidth
         canvas.height = window.innerHeight
+        scale = Math.min(canvas.width / 1920, canvas.height / 1080)
     }
 
     root.appendChild(canvas)
     var context = canvas.getContext("2d")
     return context
 }
+var scale = 1
 
 var currentValue
 const handleChange = (getState, context) => () => {
@@ -43,12 +46,12 @@ const handleChange = (getState, context) => () => {
             const canvas = context.canvas
             context.translate(canvas.width / 2, canvas.height / 2)
             context.scale(1, -1)
-            context.translate(0, -currentValue.player.cameraR)
+            context.translate(0, -currentValue.player.cameraR * scale)
             const rotation = -currentValue.player.cameraAngle + Math.PI / 2
             context.rotate(rotation)
 
             for(const componentInstance of componentInstances) {
-                componentInstance.renderToContext(context, currentValue, 0)
+                componentInstance.renderToContext(context, currentValue, scale)
             }
 
             context.restore()

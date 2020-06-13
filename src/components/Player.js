@@ -55,27 +55,27 @@ class Player extends Component {
         }
     }
 
-    renderToContext(context, state) {
+    renderToContext(context, state, scale) {
         const wins = state.level.wins
         context.save()
         context.fillStyle = "#007DFF"
         context.rotate(state.player.posAngle)
-        context.translate(state.player.posR, 0)
+        context.translate(state.player.posR * scale, 0)
         context.fillRect(
-            - constants.PLAYER_HEIGHT / 2,
-            - constants.PLAYER_WIDTH / 2,
-            constants.PLAYER_HEIGHT,
-            constants.PLAYER_WIDTH
+            - constants.PLAYER_HEIGHT / 2 * scale,
+            - constants.PLAYER_WIDTH / 2 * scale,
+            constants.PLAYER_HEIGHT * scale,
+            constants.PLAYER_WIDTH * scale
         )
         context.fillStyle = "#FFFFFF"
         for(var i = 0; i < wins; i++) {
             var y = Math.floor(i / 2 + 1)
             var x = Math.floor(i % 2 + 1)
             context.fillRect(
-                - constants.PLAYER_HEIGHT / 2 + constants.PLAYER_HEIGHT / 4 * y - 2,
-                - constants.PLAYER_WIDTH / 2 + constants.PLAYER_WIDTH / 3 * x - 2,
-                4,
-                4
+                - (constants.PLAYER_HEIGHT / 2 - constants.PLAYER_HEIGHT / 4 * y + 2) * scale,
+                - (constants.PLAYER_WIDTH / 2 - constants.PLAYER_WIDTH / 3 * x + 2) * scale,
+                4 * scale,
+                4 * scale
             )
         }
         context.restore()

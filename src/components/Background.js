@@ -17,9 +17,9 @@ class Background extends Component {
         return this.updatePosition = false
     }
 
-    renderToContext(context, state) {
+    renderToContext(context, state, scale) {
         context.fillStyle = "#FFFFFF"
-        const r = state.player.cameraR * 0.9 - constants.PLANET_RADIUS
+        const r = (state.player.cameraR * 0.9 ) * scale
         const angle = state.player.cameraAngle
         const offsetX = r * Math.cos(angle)
         const offsetY = r * Math.sin(angle)
