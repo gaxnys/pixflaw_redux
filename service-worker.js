@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/pixflaw_redux/precache-manifest.e52e42f7a7eefc1ba13a3991b186242f.js"
+  "/pixflaw_redux/precache-manifest.e9e735af27f88c85124303148f84d739.js"
 );
 
 self.addEventListener('message', (event) => {
