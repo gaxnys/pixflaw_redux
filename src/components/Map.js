@@ -59,8 +59,8 @@ class Map extends Component {
             context.fillStyle =
                 "hsl(0, 0%, " + Math.round(random * 100) + "%)"
             context.fillRect(
-                point.posX * scale,
-                point.posY * scale,
+                point.getX() * scale,
+                point.getY() * scale,
                 5 * scale,
                 5 * scale
             )
@@ -75,7 +75,7 @@ function renderPlatforms(context, level, scale) {
         context.save()
 
         context.rotate(point.angle)
-        context.fillRect((point.r - constants.PLATFORM_SIDE / 2) * scale,
+        context.fillRect((point.getRadius() - constants.PLATFORM_SIDE / 2) * scale,
                          - constants.PLATFORM_SIDE / 2 * scale,
                          constants.PLATFORM_SIDE * scale,
                          constants.PLATFORM_SIDE * scale)

@@ -32,20 +32,20 @@ const calculateAcceleration = (keys, posR, colliding) => {
     }
     for(const key of keys){
         switch(key) {
-            case "up":
-                accR += verticalAcc
-                break
+        case "up":
+            accR += verticalAcc
+            break
 
-            case "left":
-                accAngle += Math.atan(horizontalAcc / posR)
-                break
+        case "left":
+            accAngle += Math.atan(horizontalAcc / posR)
+            break
 
-            case "right":
-                accAngle -= Math.atan(horizontalAcc / posR)
-                break
+        case "right":
+            accAngle -= Math.atan(horizontalAcc / posR)
+            break
 
-            default:
-                break
+        default:
+            break
         }
     }
 
@@ -60,8 +60,8 @@ const checkCollisions = (posR, posAngle, platforms) => {
     const playerAnglePlatform = Math.atan(playerWidthPlatform / posR)
     const playerHeightPlatform = constants.PLAYER_HEIGHT / 2 + constants.PLATFORM_SIDE / 2
     for(const platform of platforms) {
-        const radiusDiff = platform.r - posR
-        const angleDiff = normalize(platform.angle - posAngle)
+        const radiusDiff = platform.getRadius() - posR
+        const angleDiff = normalize(platform.getAngle() - posAngle)
 
         sides.almost = sides.almost || (
             Math.abs(radiusDiff) < playerHeightPlatform + 1 &&
