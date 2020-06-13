@@ -1,6 +1,21 @@
 {
-  "main.css": "static/css/main.a77a2078.css",
-  "main.css.map": "static/css/main.a77a2078.css.map",
-  "main.js": "static/js/main.ec7db9e7.js",
-  "main.js.map": "static/js/main.ec7db9e7.js.map"
+  "files": {
+    "main.css": "/pixflaw_redux/static/css/main.ff01f609.chunk.css",
+    "main.js": "/pixflaw_redux/static/js/main.7140d3d0.chunk.js",
+    "main.js.map": "/pixflaw_redux/static/js/main.7140d3d0.chunk.js.map",
+    "runtime-main.js": "/pixflaw_redux/static/js/runtime-main.3943dd47.js",
+    "runtime-main.js.map": "/pixflaw_redux/static/js/runtime-main.3943dd47.js.map",
+    "static/js/2.09238a1a.chunk.js": "/pixflaw_redux/static/js/2.09238a1a.chunk.js",
+    "static/js/2.09238a1a.chunk.js.map": "/pixflaw_redux/static/js/2.09238a1a.chunk.js.map",
+    "index.html": "/pixflaw_redux/index.html",
+    "precache-manifest.b6ac3a771188425af51475aad6712d17.js": "/pixflaw_redux/precache-manifest.b6ac3a771188425af51475aad6712d17.js",
+    "service-worker.js": "/pixflaw_redux/service-worker.js",
+    "static/css/main.ff01f609.chunk.css.map": "/pixflaw_redux/static/css/main.ff01f609.chunk.css.map"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.3943dd47.js",
+    "static/js/2.09238a1a.chunk.js",
+    "static/css/main.ff01f609.chunk.css",
+    "static/js/main.7140d3d0.chunk.js"
+  ]
 }
