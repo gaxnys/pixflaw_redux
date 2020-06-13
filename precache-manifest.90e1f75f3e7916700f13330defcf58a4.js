@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "6191a28e905874214c8e3d7c88db2fc3",
+    "revision": "8fe754aab535a450bf09bff9f7dbbb45",
     "url": "/pixflaw_redux/index.html"
   },
   {
-    "revision": "2dcd998ebad30a358258",
+    "revision": "4fb8c04cac88bfb0c5cf",
     "url": "/pixflaw_redux/static/css/main.ff01f609.chunk.css"
   },
   {
@@ -12,8 +12,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/pixflaw_redux/static/js/2.09238a1a.chunk.js"
   },
   {
-    "revision": "2dcd998ebad30a358258",
-    "url": "/pixflaw_redux/static/js/main.b16be036.chunk.js"
+    "revision": "4fb8c04cac88bfb0c5cf",
+    "url": "/pixflaw_redux/static/js/main.fd176cc4.chunk.js"
   },
   {
     "revision": "eb94f5a6dd385a08f2ad",
