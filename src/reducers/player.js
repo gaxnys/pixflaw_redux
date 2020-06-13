@@ -21,14 +21,12 @@ const keyToDirection = {
 }
 
 const calculateAcceleration = (keys, posR, colliding) => {
-    var accAngle = 0, accR = colliding ? 0 : -constants.DOWN_CONSTANT
+    var accAngle = 0, accR = 0
     var verticalAcc = 0
     var horizontalAcc = constants.FLY_ACCELERATION
     if(colliding) {
         verticalAcc = constants.JUMP_ACCELERATION
         horizontalAcc = constants.RUN_ACCELERATION
-    } else {
-        verticalAcc = constants.DOWN_CONSTANT
     }
     for(const key of keys){
         switch(key) {
@@ -38,6 +36,10 @@ const calculateAcceleration = (keys, posR, colliding) => {
 
         case "left":
             accAngle += Math.atan(horizontalAcc / posR)
+            break
+
+        case "down":
+            accR -= constants.DOWN_CONSTANT
             break
 
         case "right":
