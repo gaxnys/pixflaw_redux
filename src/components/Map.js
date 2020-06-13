@@ -39,18 +39,7 @@ class Map extends Component {
     }
 
     renderToContext(context, state, scale) {
-        context.fillStyle = "#999999"
-
-        for(const point of state.level.level) {
-            context.save()
-
-            context.rotate(point.angle)
-            context.fillRect((point.r - constants.PLATFORM_SIDE / 2) * scale,
-                             - constants.PLATFORM_SIDE / 2 * scale,
-                             constants.PLATFORM_SIDE * scale,
-                             constants.PLATFORM_SIDE * scale)
-            context.restore()
-        }
+        renderPlatforms(context, state.level.level, scale)
 
         context.fillStyle = "#666666"
         context.beginPath()
@@ -76,6 +65,21 @@ class Map extends Component {
                 5 * scale
             )
         }
+    }
+}
+
+function renderPlatforms(context, level, scale) {
+    context.fillStyle = "#999999"
+
+    for(const point of level) {
+        context.save()
+
+        context.rotate(point.angle)
+        context.fillRect((point.r - constants.PLATFORM_SIDE / 2) * scale,
+                         - constants.PLATFORM_SIDE / 2 * scale,
+                         constants.PLATFORM_SIDE * scale,
+                         constants.PLATFORM_SIDE * scale)
+        context.restore()
     }
 }
 
