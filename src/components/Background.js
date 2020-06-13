@@ -1,12 +1,12 @@
 import { Component } from './index'
 import { pointsInCircle } from '../utils/random'
-import { POINTS, BACKGROUND_RADIUS, PLANET_RADIUS } from '../constants'
+import constants from '../constants'
 
 class Background extends Component {
     constructor(getState) {
         super(getState)
 
-        this.points = pointsInCircle(POINTS, BACKGROUND_RADIUS)
+        this.points = pointsInCircle(constants.POINTS, constants.BACKGROUND_RADIUS)
     }
 
     shouldCanvasUpdate(previousValue, currentValue) {
@@ -19,7 +19,7 @@ class Background extends Component {
 
     renderToContext(context, state) {
         context.fillStyle = "#FFFFFF"
-        const r = state.player.cameraR * 0.9 - PLANET_RADIUS
+        const r = state.player.cameraR * 0.9 - constants.PLANET_RADIUS
         const angle = state.player.cameraAngle
         const offsetX = r * Math.cos(angle)
         const offsetY = r * Math.sin(angle)

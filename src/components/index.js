@@ -1,5 +1,3 @@
-import { PLAYER_WIDTH, PLAYER_HEIGHT } from '../constants'
-
 export class Component {
     constructor(getState) {
         this.context = document.createElement('canvas').getContext("2d")
@@ -29,7 +27,7 @@ export class Component {
     }
 
     render() {
-        throw "Component class shall not be instantiated directly"
+        throw new Error("Component class shall not be instantiated directly")
     }
 }
 

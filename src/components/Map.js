@@ -1,15 +1,15 @@
 import { Component } from './index'
-import { PLANET_RADIUS, LEVEL_RADIUS, PLATFORM_SIDE } from '../constants'
+import constants from '../constants'
 import { pointsInCircle } from '../utils/random'
 
 class Map extends Component {
     constructor(getState) {
         super(getState)
-        this.context.canvas.width = LEVEL_RADIUS * 2 + 100
-        this.context.canvas.height = LEVEL_RADIUS * 2 + 100
-        this.center = LEVEL_RADIUS + 50
+        this.context.canvas.width = constants.LEVEL_RADIUS * 2 + 100
+        this.context.canvas.height = constants.LEVEL_RADIUS * 2 + 100
+        this.center = constants.LEVEL_RADIUS + 50
         const numShapes = 1000
-        this.points = pointsInCircle(numShapes, PLANET_RADIUS - 5)
+        this.points = pointsInCircle(numShapes, constants.PLANET_RADIUS - 5)
         this.randoms = []
         for(var i = 0; i < this.points.length; i++) {
             this.randoms.push(Math.random())
@@ -29,7 +29,6 @@ class Map extends Component {
     }
 
     render() {
-        const state = this.getState()
         return {
             canvas: this.context.canvas,
             angle: 0,
@@ -44,10 +43,12 @@ class Map extends Component {
 
         for(const point of state.level.level) {
             context.save()
-            const angleDiff = Math.tan(PLATFORM_SIDE / 2 / point.r)
 
             context.rotate(point.angle)
-            context.fillRect(point.r - PLATFORM_SIDE / 2, - PLATFORM_SIDE / 2, PLATFORM_SIDE, PLATFORM_SIDE)
+            context.fillRect(point.r - constants.PLATFORM_SIDE / 2,
+                             - constants.PLATFORM_SIDE / 2,
+                             constants.PLATFORM_SIDE,
+                             constants.PLATFORM_SIDE)
             context.restore()
         }
 

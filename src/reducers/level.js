@@ -1,25 +1,20 @@
 import { pointsInCircle } from '../utils/random'
-import { LEVEL_RADIUS, PLANET_RADIUS, PLATFORMS } from '../constants'
+import constants from '../constants'
 import { LEVEL_WIN, RESET_LEVEL } from '../actions'
 
-const getDifficulty = (wins) => (
-    wins + 4.0
-)
-
 const getPlanetRadius = (wins) => (
-    PLANET_RADIUS
+    constants.PLANET_RADIUS
 )
 
 const getGoalRadius = (wins) => (
-    LEVEL_RADIUS * 1.5 ** wins
+    constants.LEVEL_RADIUS * 1.5 ** wins
 )
 
 const generateLevel = (wins) => {
-    const difficulty = getDifficulty(wins)
     return pointsInCircle(
-        PLATFORMS,
+        constants.PLATFORMS,
         getGoalRadius(wins),
-        getPlanetRadius(wins) ,
+        getPlanetRadius(wins),
         60, false)
 }
 
@@ -32,20 +27,18 @@ var defaultState = { level: generateLevel(defaultWins),
 
 const level = (state = Object.assign({}, defaultState), action) => {
     var newWins = state.wins
-    switch(action.type) {
-        case LEVEL_WIN:
-            newWins += 1
-
-        case RESET_LEVEL:
-            return Object.assign({}, state, {
+    if (action.type === LEVEL_WIN) {
+        newWins += 1
+    }
+    if (action.type === LEVEL_WIN || action.type === RESET_LEVEL) {
+        return Object.assign({}, state, {
                 level: generateLevel(newWins),
                 wins: newWins,
                 planetRadius: getPlanetRadius(newWins),
-                goalRadius: getGoalRadius(newWins)})
-
-        default:
-            return state
+            goalRadius: getGoalRadius(newWins)})
     }
+
+    return state
 }
 
 export default level

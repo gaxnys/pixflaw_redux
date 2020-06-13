@@ -1,5 +1,11 @@
-import { RENDER_TICK, GAME_TICK, KEY_DOWN, KEY_UP, TOUCHES, LEVEL_WIN } from '../actions/index'
-import { ACCELERATION, JUMP_ACCELERATION, JETPACK_ACCELERATION, RUN_ACCELERATION, FLY_ACCELERATION, GROUND_FRICTION, AIR_FRICTION, VELOCITY_LOSS, PLAYER_WIDTH, PLAYER_HEIGHT, PLATFORM_SIDE, PLANET_RADIUS, CAMERA_INERTIA, PLANET_MASS, SPEED_LIMIT, DOWN_CONSTANT, TOUCH_DEBOUNCE_LIMIT } from '../constants.js'
+import {
+    GAME_TICK,
+    KEY_DOWN,
+    KEY_UP,
+    TOUCHES,
+    LEVEL_WIN,
+} from '../actions/index'
+import constants from '../constants.js'
 import { normalize } from '../utils/trig'
 
 const keyToDirection = {
@@ -15,12 +21,14 @@ const keyToDirection = {
 }
 
 const calculateAcceleration = (keys, posR, colliding) => {
-    var accAngle = 0, accR = 0
-    var verticalAcc = JETPACK_ACCELERATION * PLANET_MASS / Math.pow(posR, 2)
-    var horizontalAcc = FLY_ACCELERATION
+    var accAngle = 0, accR = colliding ? 0 : -constants.DOWN_CONSTANT
+    var verticalAcc = 0
+    var horizontalAcc = constants.FLY_ACCELERATION
     if(colliding) {
-        verticalAcc = JUMP_ACCELERATION
-        horizontalAcc = RUN_ACCELERATION
+        verticalAcc = constants.JUMP_ACCELERATION
+        horizontalAcc = constants.RUN_ACCELERATION
+    } else {
+        verticalAcc = constants.DOWN_CONSTANT
     }
     for(const key of keys){
         switch(key) {
@@ -32,10 +40,6 @@ const calculateAcceleration = (keys, posR, colliding) => {
                 accAngle += Math.atan(horizontalAcc / posR)
                 break
 
-            case "down":
-                accR -= DOWN_CONSTANT
-                break
-
             case "right":
                 accAngle -= Math.atan(horizontalAcc / posR)
                 break
@@ -45,16 +49,16 @@ const calculateAcceleration = (keys, posR, colliding) => {
         }
     }
 
-    accR -= PLANET_MASS / Math.pow(posR, 2)
+    accR -= constants.PLANET_MASS / Math.pow(posR, 2)
 
     return { r: accR, angle: accAngle }
 }
 
 const checkCollisions = (posR, posAngle, platforms) => {
     var sides = { up: false, left: false, down: false, right: false, almost: false }
-    const playerWidthPlatform = PLAYER_WIDTH / 2 + PLATFORM_SIDE / 2
+    const playerWidthPlatform = constants.PLAYER_WIDTH / 2 + constants.PLATFORM_SIDE / 2
     const playerAnglePlatform = Math.atan(playerWidthPlatform / posR)
-    const playerHeightPlatform = PLAYER_HEIGHT / 2 + PLATFORM_SIDE / 2
+    const playerHeightPlatform = constants.PLAYER_HEIGHT / 2 + constants.PLATFORM_SIDE / 2
     for(const platform of platforms) {
         const radiusDiff = platform.r - posR
         const angleDiff = normalize(platform.angle - posAngle)
@@ -97,116 +101,116 @@ const player = (
 ) => {
     var newKeys
     switch(action.type) {
-        case KEY_DOWN:
-            newKeys = new Set(state.keys)
-            newKeys.add(keyToDirection[action.key])
-            return Object.assign({}, state, { keys: newKeys })
+    case KEY_DOWN:
+        newKeys = new Set(state.keys)
+        newKeys.add(keyToDirection[action.key])
+        return Object.assign({}, state, { keys: newKeys })
 
-        case KEY_UP:
-            newKeys = new Set(state.keys)
-            newKeys.delete(keyToDirection[action.key])
-            return Object.assign({}, state, { keys: newKeys })
+    case KEY_UP:
+        newKeys = new Set(state.keys)
+        newKeys.delete(keyToDirection[action.key])
+        return Object.assign({}, state, { keys: newKeys })
 
-        case TOUCHES:
-            newKeys = new Set()
-            if(action.touches.length === 2) {
-                if(state.debounce === TOUCH_DEBOUNCE_LIMIT) {
-                    newKeys = new Set(state.keys)
-                }
+    case TOUCHES:
+        newKeys = new Set()
+        if(action.touches.length === 2) {
+            if(state.debounce === constants.TOUCH_DEBOUNCE_LIMIT) {
+                newKeys = new Set(state.keys)
+            }
+            newKeys.add("up")
+        } else if(action.touches.length > 0) {
+            if(state.keys.has("up")) {
                 newKeys.add("up")
-            } else if(action.touches.length > 0) {
-                if(state.keys.has("up")) {
-                    newKeys.add("up")
-                }
-
-                if(action.touches[0].clientX > action.windowWidth / 2) {
-                    newKeys.add("right")
-                } else {
-                    newKeys.add("left")
-                }
-            }
-            
-            return Object.assign({}, state, { keys: newKeys })
-
-        case GAME_TICK:
-            const collisions = checkCollisions(state.posR, state.posAngle, levelState.level)
-            const collidingIsh =
-                (state.posR - PLAYER_HEIGHT / 2 - 1 < levelState.planetRadius) || collisions.almost
-            const newAcc = calculateAcceleration(state.keys, state.posR, collidingIsh)
-
-            var newVelR = Math.min(state.velR + newAcc.r, SPEED_LIMIT)
-            if(collisions.up && state.velR > 0 || collisions.down && state.velR < 0) {
-                newVelR = 0
-            }
-            var newPosR = state.posR + newVelR +
-                          collisions.down + collisions.up
-
-            if(state.posR - PLAYER_HEIGHT / 2 < levelState.planetRadius) {
-                newPosR = levelState.planetRadius + PLAYER_HEIGHT / 2
-                newVelR = (newVelR < -VELOCITY_LOSS) ? -(newVelR+VELOCITY_LOSS) : 0
-                newVelR = 0
             }
 
-            const friction = collidingIsh ? GROUND_FRICTION : AIR_FRICTION
-
-            var newVelAngle = state.velAngle + newAcc.angle
-
-            const frictionAcc = Math.sign(-state.velAngle) * friction
-            newVelAngle +=  Math.tan(frictionAcc / state.posR)
-
-            if(Math.abs(newVelAngle) < Math.tan(friction / state.posR)) {
-                newVelAngle = 0
+            if(action.touches[0].clientX > action.windowWidth / 2) {
+                newKeys.add("right")
+            } else {
+                newKeys.add("left")
             }
+        }
 
-            if(collisions.left && state.velAngle > 0 || collisions.right && state.velAngle < 0) {
-                newVelAngle = 0
-            }
-            var newPosAngle = state.posAngle + newVelAngle +
-                              collisions.left + collisions.right
+        return Object.assign({}, state, { keys: newKeys })
 
-            if(newPosAngle > 2 * Math.PI) {
-                newPosAngle -= 2 * Math.PI
-            } else if(newPosAngle < 0) {
-                newPosAngle += 2 * Math.PI
-            }
+    case GAME_TICK:
+        const collisions = checkCollisions(state.posR, state.posAngle, levelState.level)
+        const collidingIsh =
+              (state.posR - constants.PLAYER_HEIGHT / 2 - 1 < levelState.planetRadius) || collisions.almost
+        const newAcc = calculateAcceleration(state.keys, state.posR, collidingIsh)
 
-            const newCameraR = ((state.cameraR * CAMERA_INERTIA + newPosR) /
-                (CAMERA_INERTIA + 1))
+        var newVelR = Math.min(state.velR + newAcc.r, constants.SPEED_LIMIT)
+        if((collisions.up && state.velR > 0) || (collisions.down && state.velR < 0)) {
+            newVelR = 0
+        }
+        var newPosR = state.posR + newVelR +
+            collisions.down + collisions.up
 
-            var angleDiff = newPosAngle - state.cameraAngle
-            if(angleDiff > Math.PI) {
-                angleDiff -= 2 * Math.PI
-            } else if(angleDiff < - Math.PI) {
-                angleDiff += 2 * Math.PI
-            }
+        if(state.posR - constants.PLAYER_HEIGHT / 2 < levelState.planetRadius) {
+            newPosR = levelState.planetRadius + constants.PLAYER_HEIGHT / 2
+            newVelR = (newVelR < -constants.VELOCITY_LOSS) ? -(newVelR+constants.VELOCITY_LOSS) : 0
+            newVelR = 0
+        }
 
-            var newCameraAngle = state.cameraAngle + angleDiff / CAMERA_INERTIA
-            if(newCameraAngle > 2 * Math.PI) {
-                newCameraAngle -= 2 * Math.PI
-            } else if(newCameraAngle < 0) {
-                newCameraAngle += 2 * Math.PI
-            }
+        const friction = collidingIsh ? constants.GROUND_FRICTION : constants.AIR_FRICTION
 
-            let newDebounce = state.debounce
-            if(state.keys.size == 0) {
-                newDebounce = 0
-            } else if(state.debounce < TOUCH_DEBOUNCE_LIMIT) {
-                newDebounce += 1
-            }
+        var newVelAngle = state.velAngle + newAcc.angle
 
-            return Object.assign({}, state, {
-                velAngle: newVelAngle, velR: newVelR,
-                posAngle: newPosAngle, posR: newPosR,
-                cameraAngle: newCameraAngle, cameraR: newCameraR,
-                debounce: newDebounce,
-            })
+        const frictionAcc = Math.sign(-state.velAngle) * friction
+        newVelAngle +=  Math.tan(frictionAcc / state.posR)
 
-        case LEVEL_WIN:
-            return Object.assign({}, state, {
-                posR: PLANET_RADIUS, cameraR: PLANET_RADIUS })
+        if(Math.abs(newVelAngle) < Math.tan(friction / state.posR)) {
+            newVelAngle = 0
+        }
 
-        default:
-            return state
+        if((collisions.left && state.velAngle > 0) || (collisions.right && state.velAngle < 0)) {
+            newVelAngle = 0
+        }
+        var newPosAngle = state.posAngle + newVelAngle +
+            collisions.left + collisions.right
+
+        if(newPosAngle > 2 * Math.PI) {
+            newPosAngle -= 2 * Math.PI
+        } else if(newPosAngle < 0) {
+            newPosAngle += 2 * Math.PI
+        }
+
+        const newCameraR = ((state.cameraR * constants.CAMERA_INERTIA + newPosR) /
+                            (constants.CAMERA_INERTIA + 1))
+
+        var angleDiff = newPosAngle - state.cameraAngle
+        if(angleDiff > Math.PI) {
+            angleDiff -= 2 * Math.PI
+        } else if(angleDiff < - Math.PI) {
+            angleDiff += 2 * Math.PI
+        }
+
+        var newCameraAngle = state.cameraAngle + angleDiff / constants.CAMERA_INERTIA
+        if(newCameraAngle > 2 * Math.PI) {
+            newCameraAngle -= 2 * Math.PI
+        } else if(newCameraAngle < 0) {
+            newCameraAngle += 2 * Math.PI
+        }
+
+        let newDebounce = state.debounce
+        if(state.keys.size === 0) {
+            newDebounce = 0
+        } else if(state.debounce < constants.TOUCH_DEBOUNCE_LIMIT) {
+            newDebounce += 1
+        }
+
+        return Object.assign({}, state, {
+            velAngle: newVelAngle, velR: newVelR,
+            posAngle: newPosAngle, posR: newPosR,
+            cameraAngle: newCameraAngle, cameraR: newCameraR,
+            debounce: newDebounce,
+        })
+
+    case LEVEL_WIN:
+        return Object.assign({}, state, {
+            posR: constants.PLANET_RADIUS, cameraR: constants.PLANET_RADIUS })
+
+    default:
+        return state
     }
 }
 

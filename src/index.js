@@ -3,7 +3,7 @@ import { createLogger } from 'redux-logger'
 
 import './index.css'
 import rootReducer from './reducers/index'
-import { renderTick, gameTick, keyDown, keyUp, touches, levelWin, resetLevel } from './actions/index'
+import { gameTick, keyDown, keyUp, touches, levelWin, resetLevel } from './actions/index'
 import Player from './components/Player'
 import Map from './components/Map'
 import Background from './components/Background'

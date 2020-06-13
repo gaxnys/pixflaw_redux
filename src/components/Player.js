@@ -1,5 +1,5 @@
 import { Component } from './index'
-import { PLAYER_WIDTH, PLAYER_HEIGHT } from '../constants'
+import constants from '../constants'
 
 class Player extends Component {
     shouldCanvasUpdate(previousValue, currentValue) {
@@ -33,21 +33,25 @@ class Player extends Component {
             const canvas = this.context.canvas
             this.context.clearRect(0, 0, canvas.width, canvas.height)
             this.context.save()
-            this.context.translate(PLAYER_WIDTH  * 2,
-                                   PLAYER_HEIGHT  * 2)
+            this.context.translate(
+                constants.PLAYER_WIDTH  * 2,
+                constants.PLAYER_HEIGHT  * 2
+            )
             this.context.rotate(state.player.posAngle)
-            this.context.fillRect(- PLAYER_HEIGHT / 2,
-                                - PLAYER_WIDTH / 2,
-                                  PLAYER_HEIGHT,
-                                  PLAYER_WIDTH)
+            this.context.fillRect(
+                - constants.PLAYER_HEIGHT / 2,
+                - constants.PLAYER_WIDTH / 2,
+                constants.PLAYER_HEIGHT,
+                constants.PLAYER_WIDTH
+            )
             this.context.restore()
         }
         return {
             canvas: this.context.canvas,
             angle: state.player.posAngle,
             r: state.player.posR,
-            offsetX: PLAYER_WIDTH * 2,
-            offsetY: PLAYER_HEIGHT * 2
+            offsetX: constants.PLAYER_WIDTH * 2,
+            offsetY: constants.PLAYER_HEIGHT * 2
         }
     }
 
@@ -57,17 +61,22 @@ class Player extends Component {
         context.fillStyle = "#007DFF"
         context.rotate(state.player.posAngle)
         context.translate(state.player.posR, 0)
-        context.fillRect(- PLAYER_HEIGHT / 2,
-                       - PLAYER_WIDTH / 2,
-                         PLAYER_HEIGHT,
-                         PLAYER_WIDTH)
+        context.fillRect(
+            - constants.PLAYER_HEIGHT / 2,
+            - constants.PLAYER_WIDTH / 2,
+            constants.PLAYER_HEIGHT,
+            constants.PLAYER_WIDTH
+        )
         context.fillStyle = "#FFFFFF"
         for(var i = 0; i < wins; i++) {
             var y = Math.floor(i / 2 + 1)
             var x = Math.floor(i % 2 + 1)
-            context.fillRect(- PLAYER_HEIGHT / 2 + PLAYER_HEIGHT / 4 * y - 2,
-                           - PLAYER_WIDTH / 2 + PLAYER_WIDTH / 3 * x - 2,
-                             4, 4)
+            context.fillRect(
+                - constants.PLAYER_HEIGHT / 2 + constants.PLAYER_HEIGHT / 4 * y - 2,
+                - constants.PLAYER_WIDTH / 2 + constants.PLAYER_WIDTH / 3 * x - 2,
+                4,
+                4
+            )
         }
         context.restore()
     }
