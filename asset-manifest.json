@@ -1,21 +1,21 @@
 {
   "files": {
     "main.css": "/pixflaw_redux/static/css/main.ff01f609.chunk.css",
-    "main.js": "/pixflaw_redux/static/js/main.fd176cc4.chunk.js",
-    "main.js.map": "/pixflaw_redux/static/js/main.fd176cc4.chunk.js.map",
+    "main.js": "/pixflaw_redux/static/js/main.7ac53ce5.chunk.js",
+    "main.js.map": "/pixflaw_redux/static/js/main.7ac53ce5.chunk.js.map",
     "runtime-main.js": "/pixflaw_redux/static/js/runtime-main.3943dd47.js",
     "runtime-main.js.map": "/pixflaw_redux/static/js/runtime-main.3943dd47.js.map",
-    "static/js/2.09238a1a.chunk.js": "/pixflaw_redux/static/js/2.09238a1a.chunk.js",
-    "static/js/2.09238a1a.chunk.js.map": "/pixflaw_redux/static/js/2.09238a1a.chunk.js.map",
+    "static/js/2.7bb169f5.chunk.js": "/pixflaw_redux/static/js/2.7bb169f5.chunk.js",
+    "static/js/2.7bb169f5.chunk.js.map": "/pixflaw_redux/static/js/2.7bb169f5.chunk.js.map",
     "index.html": "/pixflaw_redux/index.html",
-    "precache-manifest.90e1f75f3e7916700f13330defcf58a4.js": "/pixflaw_redux/precache-manifest.90e1f75f3e7916700f13330defcf58a4.js",
+    "precache-manifest.e52e42f7a7eefc1ba13a3991b186242f.js": "/pixflaw_redux/precache-manifest.e52e42f7a7eefc1ba13a3991b186242f.js",
     "service-worker.js": "/pixflaw_redux/service-worker.js",
     "static/css/main.ff01f609.chunk.css.map": "/pixflaw_redux/static/css/main.ff01f609.chunk.css.map"
   },
   "entrypoints": [
     "static/js/runtime-main.3943dd47.js",
-    "static/js/2.09238a1a.chunk.js",
+    "static/js/2.7bb169f5.chunk.js",
     "static/css/main.ff01f609.chunk.css",
-    "static/js/main.fd176cc4.chunk.js"
+    "static/js/main.7ac53ce5.chunk.js"
   ]
 }
